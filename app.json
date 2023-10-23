@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eda9f590-0d96-4e58-8ea9-222dda9c3c84"
+      }
+    },
+    "owner": "yunusemrahdursun"
   }
 }
