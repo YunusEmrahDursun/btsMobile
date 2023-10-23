@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Store = createContext();
 
@@ -15,6 +16,10 @@ const storeReducer = (state, action) => {
         tab: action.payload,
       };
     case 'changeToken':
+      try {
+        AsyncStorage.setItem( 'token', action.payload, );
+      } catch (error) {
+      }
       return {
         ...state,
         tab:"home",

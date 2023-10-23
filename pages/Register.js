@@ -106,9 +106,11 @@ const  Register = () => {
     setForm({...form,[_name]:_value});
   }
  
+  const back = () => { 
+    dispatch({ type: 'changeTab', payload: "login" });
+  }
   return (
     <View style={styles.full}> 
-
 
       { tab == 1 && <>
 
@@ -117,6 +119,7 @@ const  Register = () => {
           <Text h3 style={styles.title}> <Icon type='font-awesome' style={{marginRight:10,marginBottom:2}} name='building'  color='#183153'/>BTS</Text>
           <Input style={styles.link}  placeholder='Katılım Linki' onChangeText={(e)=> formChange("link",e)} leftIcon={{ type: 'font-awesome', name: 'link' }} errorStyle={{ color: 'red' }} errorMessage={formError.link && requiredField}  />
           <Button style={styles.button} loading={registerLoading} title="Katıl" onPress={registerLinkClick} />
+          
         
         </View>
 
@@ -157,6 +160,7 @@ const  Register = () => {
         <Button color="secondary" style={{  marginTop:20,  alignItems: 'center' }}  type="outline"  title="Kapat" onPress={() => { setDialogShow(false); }} />
       </Dialog>
 
+      <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 }} style={styles.backButton} icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={back} />
     </View>
     
   );
@@ -165,11 +169,18 @@ const  Register = () => {
 const styles = StyleSheet.create({
   full:{
     width:'100%',
-    height:'100%'
+    height:'100%',
+    position:'relative'
   },
   button:{
     marginTop:10,
     width:200
+  },
+  backButton:{
+    marginBottom:50,
+    width:70,
+    borderRadius: 20,
+    marginLeft:10
   },
   container: {
     marginLeft:20,
