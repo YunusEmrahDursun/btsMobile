@@ -75,7 +75,8 @@ const  Login = () => {
         onBackdropPress={() => { setDialogShow(false); }}
       >
         <Dialog.Title style={{alignItems: 'center'}} title='Uyarı!'/>
-        <Text style={{textAlign: 'center'}}>{dialogText}</Text>
+        <View style={styles.divider} ></View>
+        <Text style={{textAlign: 'center',marginTop:5}}>{dialogText}</Text>
         <Button color="secondary" style={{  marginTop:20,  alignItems: 'center' }}  type="outline"  title="Kapat" onPress={() => { setDialogShow(false); }} />
       </Dialog>
         

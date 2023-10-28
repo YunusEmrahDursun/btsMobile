@@ -15,6 +15,16 @@ const storeReducer = (state, action) => {
         ...state,
         tab: action.payload,
       };
+    case 'removeToken':
+      try {
+        AsyncStorage.removeItem('token');
+      } catch (error) {
+      }
+      return {
+        ...state,
+        tab:"login",
+        userToken: "",
+      };  
     case 'changeToken':
       try {
         AsyncStorage.setItem( 'token', action.payload, );
