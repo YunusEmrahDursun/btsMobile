@@ -31,6 +31,9 @@
         "projectId": "eda9f590-0d96-4e58-8ea9-222dda9c3c84"
       }
     },
-    "owner": "yunusemrahdursun"
+    "owner": "yunusemrahdursun",
+    "permissions": {
+      "camera": "BTS kameranıza erişmek istiyor"
+    }
   }
 }

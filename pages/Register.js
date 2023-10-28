@@ -136,7 +136,7 @@ const  Register = () => {
 
           <Input placeholder='İsim' onChangeText={(e)=> formChange("kullanici_isim",e)} errorStyle={{ color: 'red' }} errorMessage={formError.kullanici_isim && requiredField}/>
           <Input placeholder='Soy İsim' onChangeText={(e)=> formChange("kullanici_soyisim",e)} errorStyle={{ color: 'red' }} errorMessage={formError.kullanici_soyisim && requiredField}/>
-          <Input placeholder='Telefon' onChangeText={(e)=> formChange("kullanici_telefon",e)} leftIcon={{ type: 'font-awesome', name: 'phone' }} errorMessage={formError.kullanici_telefon && requiredField}/>
+          <Input keyboardType="numeric" placeholder='Telefon' onChangeText={(e)=> formChange("kullanici_telefon",e)} leftIcon={{ type: 'font-awesome', name: 'phone' }} errorMessage={formError.kullanici_telefon && requiredField}/>
           <Input placeholder='Kullanıcı Adı' onChangeText={(e)=> formChange("kullanici_adi",e)} leftIcon={{ type: 'font-awesome', name: 'user' }} errorMessage={formError.kullanici_adi && requiredField}/>
           <Input placeholder='Şifre' onChangeText={(e)=> formChange("kullanici_parola",e)} leftIcon={{ type: 'font-awesome', name: 'key' }}  errorMessage={formError.kullanici_parola && requiredField} secureTextEntry={true} />
           <Input placeholder='Şifre Tekrarı' onChangeText={(e)=> formChange("kullanici_parola_tekrar",e)}  leftIcon={{ type: 'font-awesome', name: 'key' }}  secureTextEntry={true}

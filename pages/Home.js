@@ -1,7 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View,ScrollView } from 'react-native';
+import { StyleSheet, View,ScrollView,TouchableOpacity } from 'react-native';
 import { useState,useEffect } from 'react';
-import { Text,ListItem,Icon,Button,Skeleton,Dialog,Card   } from '@rneui/themed';
+import { Text,ListItem,Icon,Button,Skeleton,Dialog,Input   } from '@rneui/themed';
+import { Camera } from 'expo-camera';
 import { useStoreContext } from '../Store';
 import Settings from '../Settings';
 import axios, * as others from 'axios';
@@ -23,6 +23,9 @@ const  Home = () => {
   const [dialogText, setDialogText] = useState("");
   const [dialogShow, setDialogShow] = useState(false);
 
+  const [hasPermission, setHasPermission] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+
   const [formSupport, setFormSupport] = useState({
     aciklama:"",
     iletisim:"",
@@ -34,6 +37,14 @@ const  Home = () => {
     fiyat:false,
   })
 
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  
   useEffect(() => {
     if(tab == 1){
       getData();
@@ -86,6 +97,8 @@ const  Home = () => {
       return 'green';
     }else if( status == "transfer" ){
       return 'orange';
+    }else if( status == "support" ){
+      return 'blue';
     }else{
       return 'gray';
     }
@@ -109,6 +122,24 @@ const  Home = () => {
       console.log(error);
     }).finally(()=> {setMaskLoading(false);} )
   }
+  const supportTask = () => { 
+    setMaskLoading(true);
+  
+    axios.post( Settings.baseUrl + '/servisIstegiTalebi/'+selectedTask.is_emri_id,formSupport,{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+      if(response.data?.status == 1){
+        setDialogText("Servis talebi iletildi!");
+        setDialogShow(true);
+        back();
+      }
+      if(response.data?.message){
+        setDialogText(response.data.message);
+        setDialogShow(true);
+      }
+    })
+    .catch( (error) => {
+      console.log(error);
+    }).finally(()=> {setMaskLoading(false);} )
+  }
   const formSupportChange = (_name,_value) => { 
     
     const tempError = {...formSupportError}
@@ -117,6 +148,29 @@ const  Home = () => {
     setFormSupport({...formSupport,[_name]:_value});
 
   }
+
+  async function takePhoto() {
+    if (cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync();
+      // Burada çekilen fotoğrafı kaydedebilirsiniz
+      MediaLibrary.saveToLibraryAsync(photo.uri);
+    }
+  }
+  let recording = null;
+
+async function startRecording() {
+  if (cameraRef.current) {
+    recording = await cameraRef.current.recordAsync();
+  }
+}
+
+async function stopRecording() {
+  if (recording) {
+    await cameraRef.current.stopRecording();
+    // Burada kaydedilen videoyu kaydedebilirsiniz
+    MediaLibrary.saveToLibraryAsync(recording.uri);
+  }
+}
   return (
     <View style={styles.full}>
       <View style={{...styles.mask,display: maskLoading ? '': 'none'}}>
@@ -182,8 +236,6 @@ const  Home = () => {
                         <Icon type='font-awesome' style={{marginRight:5,marginBottom:0}} name='exclamation-circle'  color='#183153'/>
                         <Text style={{marginTop:10}}>  Kayıt Bulunamadı. </Text>
                         
-
-
                       </View>
                     }
                   </>
@@ -255,6 +307,7 @@ const  Home = () => {
                 icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
                 buttonStyle={styles.button}
                 containerStyle={styles.buttonContainer}
+                onPress={()=> { setTab(4) }}
               />
               <Button
                 disabled={selectedTask.is_emri_durum_key != "open"}
@@ -285,16 +338,16 @@ const  Home = () => {
             <View style={{ flex: 1}}>
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
-                  <Text h5 >Tekni Servis Desteği</Text>
+                  <Text h5 >Teknik Servis Desteği</Text>
                   <Icon  type='font-awesome' style={{marginRight:10,marginBottom:2}} name='truck'  color='#183153' />  
                 </View>
                 <View style={styles.divider} ></View>
               </View>
               <ScrollView>
                 <View style={{margin:20}}>
-                <Input onChangeText={(e)=> formSupportChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'user' }} placeholder='Açıklama' errorMessage={formError.aciklama && requiredField} />
-                <Input onChangeText={(e)=> formSupportChange  ("iletisim",e)} leftIcon={{ type: 'font-awesome', name: 'user' }} placeholder='İletişim Bilgisi' errorMessage={formError.iletisim && requiredField} />
-                <Input onChangeText={(e)=> formSupportChange  ("fiyat",e)} leftIcon={{ type: 'font-awesome', name: 'user' }} placeholder='Fiyat' errorMessage={formError.fiyat && requiredField} />
+                <Input onChangeText={(e)=> formSupportChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama' errorMessage={formSupportError.aciklama && requiredField} />
+                <Input keyboardType="numeric" onChangeText={(e)=> formSupportChange  ("iletisim",e)} leftIcon={{ type: 'font-awesome', name: 'phone' }} placeholder='İletişim Bilgisi' errorMessage={formSupportError.iletisim && requiredField} />
+                <Input keyboardType="numeric" onChangeText={(e)=> formSupportChange  ("fiyat",e)} leftIcon={{ type: 'font-awesome', name: 'money' }} placeholder='Fiyat' errorMessage={formSupportError.fiyat && requiredField} />
                 </View>
               </ScrollView>
             </View>
@@ -304,6 +357,7 @@ const  Home = () => {
                 icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
                 buttonStyle={styles.button}
                 containerStyle={styles.buttonContainer}
+                onPress={supportTask}
               />
               
                 <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}} style={styles.backButton} icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {setTab(2)}} />
@@ -314,6 +368,80 @@ const  Home = () => {
         </View>
       }
 
+      {
+        tab == 4 && selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
+            <View style={{ flex: 1}}>
+              <View style={styles.container}>
+                <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
+                  <Text h5 >İş Emrini Tamamla</Text>
+                  <Icon  type='font-awesome' style={{marginRight:10,marginBottom:2}} name='check'  color='#183153' />  
+                </View>
+                <View style={styles.divider} ></View>
+              </View>
+              <ScrollView>
+                <View style={{margin:20}}>
+                  <Input onChangeText={(e)=> formSupportChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama' errorMessage={formSupportError.aciklama && requiredField} />
+                  <View style={{ flex: 1 }}>
+                    {
+                      hasPermission === true  ? <>
+                      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Camera style={{ flex: 1 }} type={type}>
+                              <View
+                                style={{
+                                  flex: 1,
+                                  backgroundColor: 'transparent',
+                                  flexDirection: 'row',
+                                }}>
+                                <TouchableOpacity
+                                  style={{
+                                    flex: 0.1,
+                                    alignSelf: 'flex-end',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() => {
+                                    setType(
+                                      type === Camera.Constants.Type.back
+                                        ? Camera.Constants.Type.front
+                                        : Camera.Constants.Type.back
+                                    );
+                                  }}>
+                                  <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </Camera> 
+                          <Button title="Fotoğraf Çek" onPress={takePhoto} />
+                          <Button title="Video Kaydı Başlat" onPress={startRecording} />
+                          <Button title="Video Kaydı Durdur" onPress={stopRecording} />
+                        </View>
+                       
+                      </>: <View style={styles.noRecord}>
+                        
+                        <Icon type='font-awesome' style={{marginRight:5,marginBottom:0}} name='exclamation-circle'  color='#183153'/>
+                        <Text style={{marginTop:10}}>  Kameraya Erişim Sağlanamadı. </Text>
+                        
+                      </View>
+                    }
+                    
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+            <View style={{height:100, margin:20}}>
+              <Button
+                title="Servis Talebini Gönder"
+                icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
+                buttonStyle={styles.button}
+                containerStyle={styles.buttonContainer}
+                onPress={supportTask}
+              />
+              
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}} style={styles.backButton} icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {setTab(2)}} />
+
+            </View>
+         
+          
+        </View>
+      }
 
       <Dialog
         isVisible={dialogShow}
