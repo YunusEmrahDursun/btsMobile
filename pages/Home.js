@@ -37,6 +37,7 @@ const  Home = () => {
     fiyat:false,
   })
 
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();

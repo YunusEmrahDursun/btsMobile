@@ -6,10 +6,16 @@ const Store = createContext();
 const initialState = {
     tab : "login",
     userToken: "",
+    pushToken:""
 };
 
 const storeReducer = (state, action) => {
   switch (action.type) {
+    case 'setPushToken':
+      return {
+        ...state,
+        pushToken: action.payload,
+      };
     case 'changeTab':
       return {
         ...state,

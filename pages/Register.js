@@ -5,7 +5,7 @@ import { Input,Button,Divider,Text,Dialog,Icon  } from '@rneui/themed';
 import { useStoreContext } from '../Store';
 import Settings from '../Settings';
 import axios, * as others from 'axios';
-
+import { Camera } from 'expo-camera';
 const requiredField = 'Bu alanın doldurulması zorunludur.';
 const passNoMatch = 'Girilen şifreler eşleşmeli.';
 const  Register = () => {

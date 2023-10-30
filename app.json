@@ -33,7 +33,10 @@
     },
     "owner": "yunusemrahdursun",
     "permissions": {
-      "camera": "BTS kameranıza erişmek istiyor"
+      "camera": "BTS kameranıza erişmek istiyor",
+      "notifications": {
+        "provider": "expo"
+      }
     }
   }
 }
