@@ -19,8 +19,6 @@ Notifications.setNotificationHandler({
 
 const  Workspace = () => {
   const { state, dispatch } = useStoreContext();
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
   
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -63,17 +61,13 @@ const  Workspace = () => {
     return token;
   }
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
+    registerForPushNotificationsAsync().then((token) => {});
 
-    // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      console.log(notification)
-        setNotification(notification);
+      dispatch({ type: 'refresh' });
     });
 
-    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
     responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log(response)
         const {
             notification: {
                 request: {
@@ -84,7 +78,6 @@ const  Workspace = () => {
             },
         } = response;
 
-        // When the user taps on the notification, this line checks if they //are suppose to be taken to a particular screen
         if (screen) {
             props.navigation.navigate(screen);
         }

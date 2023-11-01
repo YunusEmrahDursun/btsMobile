@@ -50,7 +50,7 @@ const  Home = () => {
     if(tab == 1){
       getData();
     }
-  }, [link,tab])
+  }, [link,tab, state.refreshData])
   
   const getData = () => { 
     setTaskLoading(true);
