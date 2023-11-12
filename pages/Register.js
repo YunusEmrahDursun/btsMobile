@@ -117,7 +117,7 @@ const  Register = () => {
         <View style={styles.container}>
 
           <Text h3 style={styles.title}> <Icon type='font-awesome' style={{marginRight:10,marginBottom:2}} name='building'  color='#183153'/>BTS</Text>
-          <Input style={styles.link}  placeholder='Katılım Linki' onChangeText={(e)=> formChange("link",e)} leftIcon={{ type: 'font-awesome', name: 'link' }} errorStyle={{ color: 'red' }} errorMessage={formError.link && requiredField}  />
+          <Input style={styles.link}  placeholder='Katılım Kodu' onChangeText={(e)=> formChange("link",e)} leftIcon={{ type: 'font-awesome', name: 'link' }} errorStyle={{ color: 'red' }} errorMessage={formError.link && requiredField}  />
           <Button style={styles.button} loading={registerLoading} title="Katıl" onPress={registerLinkClick} />
           
         
