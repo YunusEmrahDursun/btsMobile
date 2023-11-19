@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "bts",
+    "name": "BTS",
     "slug": "bts",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,6 +33,16 @@
         "projectId": "eda9f590-0d96-4e58-8ea9-222dda9c3c84"
       }
     },
-    "owner": "yunusemrahdursun"
+    "owner": "yunusemrahdursun",
+    "plugins":[
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ]
   }
 }
