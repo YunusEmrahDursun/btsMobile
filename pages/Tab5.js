@@ -150,7 +150,9 @@ const  Task5 = (props) => {
                 containerStyle={styles.buttonContainer}
                 onPress={savePhoto}
               />}
-                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}} style={styles.backButton} icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab(4)}} />
+              <View style={styles.backButton} >
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab(4)}} />
+              </View>
 
             </View>
          

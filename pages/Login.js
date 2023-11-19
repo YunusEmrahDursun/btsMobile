@@ -67,8 +67,12 @@ const  Login = () => {
        <Text h3 style={styles.title}> <Icon type='font-awesome' style={{marginRight:10,marginBottom:2}} name='building'  color='#183153'/>BTS</Text>
         <Input onChangeText={(e)=> formChange("kullanici_adi",e)} leftIcon={{ type: 'font-awesome', name: 'user' }} placeholder='Kullanıcı Adı' errorMessage={formError.kullanici_adi && requiredField} />
         <Input onChangeText={(e)=> formChange("kullanici_parola",e)} leftIcon={{ type: 'font-awesome', name: 'key' }} placeholder='Şifre' errorMessage={formError.kullanici_parola && requiredField} secureTextEntry={true}/>
-        <Button style={styles.button} loading={loginLoading} title="Giriş" onPress={loginClick} />
-        <Button style={styles.button} title="Kayıt Ol" onPress={registerClick} />
+        <View style={styles.button} >
+          <Button  loading={loginLoading} title="Giriş" onPress={loginClick} />
+        </View>
+        <View style={styles.button} >
+          <Button title="Kayıt Ol" onPress={registerClick} />
+        </View>
 
         <Dialog
         isVisible={dialogShow}

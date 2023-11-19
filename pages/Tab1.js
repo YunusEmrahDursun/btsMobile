@@ -1,4 +1,4 @@
-import { StyleSheet, View,ScrollView } from 'react-native';
+import { StyleSheet, View,ScrollView,Text as Text2 } from 'react-native';
 import { useState,useEffect } from 'react';
 import { Text,ListItem,Icon,Button,Skeleton   } from '@rneui/themed';
 import { useStoreContext } from '../Store';
@@ -128,7 +128,9 @@ const  Tab1 = (props) => {
                               <View style={{display:'flex',width:'100%',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
                                 <View style={{ marginRight:10,width:10,height:10,borderRadius:20,backgroundColor:getColor(item.is_emri_durum_key) }}/>
                                 <Text style={{width:50}}>{item.is_emri_id}</Text>
-                                <Text style={{flex:1,textAlign:'left',width:'100%'}}>{item.bina_adi}</Text>
+                                <View style={{width:150}}>
+                                  <Text2 ellipsizeMode='tail' numberOfLines={1} style={{textAlign:'left'}}>{item.bina_adi}asdadasd</Text2>
+                                </View>
                               </View>
                             </ListItem.Title>
                           </ListItem.Content>

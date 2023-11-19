@@ -1,4 +1,4 @@
-import { StyleSheet, View,ScrollView } from 'react-native';
+import { StyleSheet, View,ScrollView,Text as Text2 } from 'react-native';
 import { useState } from 'react';
 import { Text,Icon,Button   } from '@rneui/themed';
 import { useStoreContext } from '../Store';
@@ -70,10 +70,10 @@ const  Tab2 = (props) => {
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
                   <Text h5 >İş Emri Detayları</Text>
-                    <View style={{backgroundColor:getColor(selectedTask.is_emri_durum_key),borderRadius:20,paddingLeft:10,paddingRight:10,paddingBottom:5,paddingTop:5}}>
-                    <Text style={{color:'#fff'}}>
+                    <View    style={{maxWidth:150,backgroundColor:getColor(selectedTask.is_emri_durum_key),borderRadius:20,paddingLeft:10,paddingRight:10,paddingBottom:5,paddingTop:5}}>
+                    <Text2 ellipsizeMode='tail'  numberOfLines={1} style={{color:'#fff'}}>
                       {selectedTask.is_emri_durum_adi}
-                    </Text>
+                    </Text2>
                   </View>
                 </View>
                 <View style={styles.divider} ></View>
@@ -97,7 +97,7 @@ const  Tab2 = (props) => {
                 </View>
               </ScrollView>
             </View>
-            <View style={{height:200, margin:20}}>
+            <View style={{height:220, margin:20}}>
               <Button
                 disabled={selectedTask.is_emri_durum_key != "open"}
                 title="İş Emrini Tamamla"
@@ -122,7 +122,9 @@ const  Tab2 = (props) => {
                 containerStyle={styles.buttonContainer}
                 onPress={()=> { props.setTab(3) }}
               />
-                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}} style={styles.backButton} icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={back} />
+              <View style={styles.backButton} >
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={back} />
+              </View>
 
             </View>
          
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
   },
   backButton:{
     width:70,
-    borderRadius: 20,
+    borderRadius: 20
   },
   divider:{
     width:'100%',

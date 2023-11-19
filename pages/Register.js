@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View,ScrollView } from 'react-native';
 import { useState,useEffect } from 'react';
 import { Input,Button,Divider,Text,Dialog,Icon  } from '@rneui/themed';
 import { useStoreContext } from '../Store';
@@ -118,36 +118,45 @@ const  Register = () => {
 
           <Text h3 style={styles.title}> <Icon type='font-awesome' style={{marginRight:10,marginBottom:2}} name='building'  color='#183153'/>BTS</Text>
           <Input style={styles.link}  placeholder='Katılım Kodu' onChangeText={(e)=> formChange("link",e)} leftIcon={{ type: 'font-awesome', name: 'link' }} errorStyle={{ color: 'red' }} errorMessage={formError.link && requiredField}  />
-          <Button style={styles.button} loading={registerLoading} title="Katıl" onPress={registerLinkClick} />
+          <View style={styles.button} >
+            <Button  loading={registerLoading} title="Katıl" onPress={registerLinkClick} />
+          </View>
           
         
         </View>
 
       </>}
       { tab == 2 &&  <>
-        <View style={styles.container}>
+          <View style={styles.containerRegister}>
 
-          <Text h3 style={styles.title}> <Icon type='font-awesome' style={{marginRight:10,marginBottom:2}} name='building'  color='#183153'/>BTS</Text>
+              <Text h5 style={{textAlign:'left',width:'100%'}}>Kullanıcı Bilgileri</Text>
 
-          <Text h5 style={{textAlign:'left',width:'100%'}}>Kullanıcı Bilgileri</Text>
-
-          <View style={styles.divider} />
-
-
-          <Input placeholder='İsim' onChangeText={(e)=> formChange("kullanici_isim",e)} errorStyle={{ color: 'red' }} errorMessage={formError.kullanici_isim && requiredField}/>
-          <Input placeholder='Soy İsim' onChangeText={(e)=> formChange("kullanici_soyisim",e)} errorStyle={{ color: 'red' }} errorMessage={formError.kullanici_soyisim && requiredField}/>
-          <Input keyboardType="numeric" placeholder='Telefon' onChangeText={(e)=> formChange("kullanici_telefon",e)} leftIcon={{ type: 'font-awesome', name: 'phone' }} errorMessage={formError.kullanici_telefon && requiredField}/>
-          <Input placeholder='Kullanıcı Adı' onChangeText={(e)=> formChange("kullanici_adi",e)} leftIcon={{ type: 'font-awesome', name: 'user' }} errorMessage={formError.kullanici_adi && requiredField}/>
-          <Input placeholder='Şifre' onChangeText={(e)=> formChange("kullanici_parola",e)} leftIcon={{ type: 'font-awesome', name: 'key' }}  errorMessage={formError.kullanici_parola && requiredField} secureTextEntry={true} />
-          <Input placeholder='Şifre Tekrarı' onChangeText={(e)=> formChange("kullanici_parola_tekrar",e)}  leftIcon={{ type: 'font-awesome', name: 'key' }}  secureTextEntry={true}
-            errorMessage={
-              (formError.kullanici_parola_tekrar && requiredField) || (formError.kullanici_parola_tekrar_match && passNoMatch)
-            } 
-          />
+              <View style={styles.divider} />
+              <ScrollView>
+                <View style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1
+                }}>
+                  <Input placeholder='İsim' onChangeText={(e)=> formChange("kullanici_isim",e)} errorStyle={{ color: 'red' }} errorMessage={formError.kullanici_isim && requiredField}/>
+                  <Input placeholder='Soy İsim' onChangeText={(e)=> formChange("kullanici_soyisim",e)} errorStyle={{ color: 'red' }} errorMessage={formError.kullanici_soyisim && requiredField}/>
+                  <Input keyboardType="numeric" placeholder='Telefon' onChangeText={(e)=> formChange("kullanici_telefon",e)} leftIcon={{ type: 'font-awesome', name: 'phone' }} errorMessage={formError.kullanici_telefon && requiredField}/>
+                  <Input placeholder='Kullanıcı Adı' onChangeText={(e)=> formChange("kullanici_adi",e)} leftIcon={{ type: 'font-awesome', name: 'user' }} errorMessage={formError.kullanici_adi && requiredField}/>
+                  <Input placeholder='Şifre' onChangeText={(e)=> formChange("kullanici_parola",e)} leftIcon={{ type: 'font-awesome', name: 'key' }}  errorMessage={formError.kullanici_parola && requiredField} secureTextEntry={true} />
+                  <Input placeholder='Şifre Tekrarı' onChangeText={(e)=> formChange("kullanici_parola_tekrar",e)}  leftIcon={{ type: 'font-awesome', name: 'key' }}  secureTextEntry={true}
+                    errorMessage={
+                      (formError.kullanici_parola_tekrar && requiredField) || (formError.kullanici_parola_tekrar_match && passNoMatch)
+                    } 
+                  />
+                  <View style={styles.button} >
+                    <Button  loading={registerLoading} title="Kayıt Ol" onPress={registerUserClick} />
+                  </View>
+                </View>
+                
+              </ScrollView>
+          </View>
           
-          <Button style={styles.button} loading={registerLoading} title="Kayıt Ol" onPress={registerUserClick} />
-
-        </View>
+       
       </> }
     
 
@@ -160,8 +169,9 @@ const  Register = () => {
         <Text style={{textAlign: 'center',marginTop:5}}>{dialogText}</Text>
         <Button color="secondary" style={{  marginTop:20,  alignItems: 'center' }}  type="outline"  title="Kapat" onPress={() => { setDialogShow(false); }} />
       </Dialog>
-
-      <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 }} style={styles.backButton} icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={back} />
+      <View style={styles.backButton} >
+        <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 }}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={back} />
+      </View>
     </View>
     
   );
@@ -190,6 +200,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  containerRegister: {
+    marginTop:50,
+    marginLeft:20,
+    marginRight:20,
+    backgroundColor: '#fff',
   },
   title:{
     marginBottom:20,
