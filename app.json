@@ -15,13 +15,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bts"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.bts"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,12 +33,6 @@
         "projectId": "eda9f590-0d96-4e58-8ea9-222dda9c3c84"
       }
     },
-    "owner": "yunusemrahdursun",
-    "permissions": {
-      "camera": "BTS kameranıza erişmek istiyor",
-      "notifications": {
-        "provider": "expo"
-      }
-    }
+    "owner": "yunusemrahdursun"
   }
 }
