@@ -5,31 +5,25 @@ import { useStoreContext } from '../Store';
 import Settings from '../Settings';
 import axios, * as others from 'axios';
 import moment from 'moment';
-import Dialog from './Dialog'
 import 'moment/locale/tr';
 moment.locale('tr');
 
-const  Tab1 = (props) => {
+const  TaskList = (props) => {
   const { state, dispatch } = useStoreContext();
   const [taskLoading, setTaskLoading] = useState(false);
   const [data, setData] = useState([])
 
-  const [title, setTitle] = useState("İş Emirleri");
-  const [link, setLink] = useState("isEmirleri");
-  const [change, setChange] = useState(true);
   const [maskLoading, setMaskLoading] = useState(false);
 
-  const [dialogText, setDialogText] = useState("");
-  const [dialogShow, setDialogShow] = useState(false);
 
   
   useEffect(() => {
       getData();
-  }, [link, state.refreshData])
+  }, [ state.refreshData])
   
   const getData = () => { 
     setTaskLoading(true);
-    axios.get( Settings.baseUrl + '/'+link+'/' ,{ headers: { 'authorization': state.userToken } }
+    axios.get( Settings.baseUrl + '/isEmirleri/' ,{ headers: { 'authorization': state.userToken } }
     ).then( (response) =>  {
       setData(response.data)
     })
@@ -44,20 +38,10 @@ const  Tab1 = (props) => {
   }
  
   const openTask = (_selected) => { 
-    props.setTab(2);
+    props.setTab('selectedTask');
     props.setSelectedTask(_selected);
   }
   
-  const openTasks = () => { 
-    setTitle("İş Emirleri");
-    setLink("isEmirleri");
-    setChange(true);
-  }
-  const closedTasks = () => { 
-    setTitle("Tamamlanmış İş Emirleri");
-    setLink("tamamlananisEmirleri");
-    setChange(false);
-  }
   const exit = () => { 
     dispatch({ type: 'removeToken' });
   }
@@ -86,7 +70,7 @@ const  Tab1 = (props) => {
           <View style={{ flex: 1}}>
             <View style={styles.container}>
               <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
-                <Text h5 >{title}</Text>
+                <Text h5 >İş Emirleri</Text>
                 {/* <Icon type='font-awesome' style={{marginRight:10,marginBottom:2}} name='inbox'  color='#183153'/> */}
                 <Icon onPress={getData} type='font-awesome' style={{marginRight:10,marginBottom:2}} name='refresh'  color='#183153' />
               </View>
@@ -129,7 +113,7 @@ const  Tab1 = (props) => {
                                 <View style={{ marginRight:10,width:10,height:10,borderRadius:20,backgroundColor:getColor(item.is_emri_durum_key) }}/>
                                 <Text style={{width:50}}>{item.is_emri_id}</Text>
                                 <View style={{width:150}}>
-                                  <Text2 ellipsizeMode='tail' numberOfLines={1} style={{textAlign:'left'}}>{item.bina_adi}asdadasd</Text2>
+                                  <Text2 ellipsizeMode='tail' numberOfLines={1} style={{textAlign:'left'}}>{item.bina_adi}</Text2>
                                 </View>
                               </View>
                             </ListItem.Title>
@@ -150,22 +134,15 @@ const  Tab1 = (props) => {
               </ScrollView>
           </View>
           <View style={{height:150, margin:20}}>
-            {
-              change ? <Button
-              title={"Tamamlanan İş Emirlerim"}
+            
+            <Button
+              title={"Yönlendirme Talepleri"}
               icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
-              onPress={closedTasks}
+              onPress={()=> {props.setTab('forwardList');}}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
-            /> : <Button
-            title={"Açık İş Emirlerim"}
-            icon={<Icon name="folder-open" color="white" iconStyle={{ marginRight: 10 }} />}
-            onPress={openTasks}
-            buttonStyle={styles.button}
-            containerStyle={styles.buttonContainer}
-          />
+            />
 
-            }
             
             <Button
               title="Oturumu Kapat"
@@ -177,7 +154,6 @@ const  Tab1 = (props) => {
           </View>
         </View>
       
-      <Dialog dialogShow={dialogShow} dialogText={dialogText} setDialogShow={ setDialogShow }/>
     </View>
   );
 }
@@ -241,4 +217,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default Tab1;
+export default TaskList;

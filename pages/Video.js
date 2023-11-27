@@ -1,4 +1,5 @@
-import { StyleSheet, View,TouchableOpacity,Image,Platform  } from 'react-native';
+import { StyleSheet, View,TouchableOpacity,Image  } from 'react-native';
+import { Video } from 'expo-av';
 import { useState,useEffect } from 'react';
 import { Text,Icon,Button  } from '@rneui/themed';
 import { Camera } from 'expo-camera';
@@ -8,22 +9,20 @@ import axios, * as others from 'axios';
 import moment from 'moment';
 import 'moment/locale/tr';
 moment.locale('tr');
-import Dialog from './Dialog'
-const  Task5 = (props) => {
+const  VideoComponent = (props) => {
   const { state, dispatch } = useStoreContext();
   
   const [maskLoading, setMaskLoading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(props.selectedTask);
-  const [dialogText, setDialogText] = useState("");
-  const [dialogShow, setDialogShow] = useState(false);
+
 
   const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
-
   const [cameraRef, setCameraRef] = useState(null);
-  const [photoUri, setPhotoUri] = useState(null);
-  
+  const [isRecording, setIsRecording] = useState(false);
+  const [videoUri, setVideoUri] = useState(null);
 
+ 
+ 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -31,31 +30,46 @@ const  Task5 = (props) => {
     })();
   }, []);
 
+  
+  
+  const startRecording = async () => {
+    if (cameraRef) {
+      try {
+        setIsRecording(true);
+        const videoRecordPromise = cameraRef.recordAsync();
+        if (videoRecordPromise) {
+          const data = await videoRecordPromise;
+          setVideoUri(data.uri);
+          setMaskLoading(false);
+        }
+      } catch (error) {
+        console.error('Video recording error:', error);
+      }
+    }
+  };
 
-  async function takePhoto() {
+  const stopRecording = () => {
     if (cameraRef) {
       setMaskLoading(true);
-      const photo = await cameraRef.takePictureAsync();
-      setPhotoUri(photo.uri);
-      setMaskLoading(false);
+      cameraRef.stopRecording();
+      setIsRecording(false);
     }
-  }
+  };
   const createFormData = async (photoUri) => {
     const filePath = Platform.OS === 'android' ? `file://${photoUri}` : photoUri;
     const fileName = filePath.split('/').pop();
     const formData = new FormData();
     formData.append('file', {
       uri: filePath,
-      type: 'image/jpeg', 
+      type: 'video/mp4', 
       name: fileName,
     });
   
     return formData;
   };
-
-  const  savePhoto = () => { 
+  const saveVideo = () => { 
     setMaskLoading(true);
-    createFormData(photoUri)
+    createFormData(videoUri)
     .then((formData) => {
       axios.post(Settings.baseUrl + '/fileUpload', formData, {
         headers: {
@@ -65,31 +79,28 @@ const  Task5 = (props) => {
       })
       .then(response => {
         
-        if(response.data?.status == 1 ){
+        if(response.data?.status == 1){
           const tempFiles= selectedTask.files ? [...selectedTask.files] : [];
           tempFiles.push(response.data.message[0].pathName)
           props.setSelectedTask({...selectedTask, files:tempFiles})
-          setPhotoUri(null);
-          props.setTab(4);
+          setVideoUri(null);
+          props.setTab('taskFinish');
         }else{
-          setDialogText("Birşeyler ters gitti!");
-          setDialogShow(true);
+          props.dialog.setDialogText("Birşeyler ters gitti!");
+          props.dialog.setDialogShow(true);
         }
         
       })
       .catch(error => {
+        props.dialog.setDialogText("Birşeyler ters gitti!");
         console.log(error)
-        setDialogText("Birşeyler ters gitti!");
-        setDialogShow(true);
+        props.dialog.setDialogShow(true);
       }).finally(()=> {setMaskLoading(false);});
     });
-   
-   
   }
-  const takePhotoAgain = () => { 
-    setPhotoUri(null);
-  }
-  
+  const takeVideoAgain = () => { 
+    setVideoUri(null)
+   }
   return (
     <View style={styles.full}>
       <View style={{...styles.mask,display: maskLoading ? '': 'none'}}>
@@ -101,7 +112,7 @@ const  Task5 = (props) => {
             <View style={{ flex: 1}}>
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
-                  <Text h5 >Fotoğraf Çek</Text>
+                  <Text h5 >Video Çek</Text>
                   <Icon  style={{marginRight:10,marginBottom:2}} name='camera'  color='#183153' />  
                 </View>
                 <View style={styles.divider} ></View>
@@ -109,17 +120,22 @@ const  Task5 = (props) => {
               <View style={{margin:20,paddingBottom:50}}>
                 
                 
-                { photoUri != null ? <View style={{...styles.full}}>
+                { videoUri != null ? <View style={{...styles.full}}>
                     <View style={{ ...styles.full,flex: 1, alignItems: 'center', justifyContent: 'center',padding:20 }}>
-                    <Image source={{ uri: photoUri }} style={{ width: '100%', height: '100%'  }} />
+                      
+                       <Video
+                        source={{ uri: videoUri }}
+                        shouldPlay
+                        useNativeControls 
+                        style={{ width: "100%", height: "100%" }}
+                      />
                   </View> 
                 </View> : <></>}
                 
-                { hasPermission === true  &&  photoUri==null &&<View  style={styles.full}>
+                { hasPermission === true  &&  videoUri==null &&<View  style={styles.full}>
                   <Camera  style={{ flex: 1 }}
                     type={Camera.Constants.Type.back}
                     ref={(ref) => setCameraRef(ref)}>
-                    
                   </Camera>
                 </View>}
                 {
@@ -129,29 +145,36 @@ const  Task5 = (props) => {
               </View>
             </View>
             <View style={{height:150, margin:20}}>
-              { photoUri && <Button
+              { !isRecording && !videoUri && <Button
+                title="Başlat"
+                icon={<Icon name="camera" color="white" iconStyle={{ marginRight: 10 }} />}
+                buttonStyle={styles.button}
+                containerStyle={styles.buttonContainer}
+                onPress={startRecording}
+              />}
+              { isRecording && !videoUri && <Button
+                title="Durdur"
+                icon={<Icon name="refresh" color="white" iconStyle={{ marginRight: 10 }} />}
+                buttonStyle={styles.button}
+                containerStyle={styles.buttonContainer}
+                onPress={stopRecording}
+              />}
+              { videoUri && <Button
                 title="Tekrar Çek"
                 icon={<Icon name="refresh" color="white" iconStyle={{ marginRight: 10 }} />}
                 buttonStyle={styles.button}
                 containerStyle={styles.buttonContainer}
-                onPress={takePhotoAgain}
+                onPress={takeVideoAgain}
               />}
-              { !photoUri && <Button
-                title="Çek"
-                icon={<Icon name="camera" color="white" iconStyle={{ marginRight: 10 }} />}
-                buttonStyle={styles.button}
-                containerStyle={styles.buttonContainer}
-                onPress={takePhoto}
-              />}
-              { photoUri && <Button
+              { videoUri && <Button
                 title="Kaydet"
                 icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
                 buttonStyle={styles.button}
                 containerStyle={styles.buttonContainer}
-                onPress={savePhoto}
+                onPress={saveVideo}
               />}
               <View style={styles.backButton} >
-                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab(4)}} />
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab('taskFinish')}} />
               </View>
 
             </View>
@@ -159,7 +182,6 @@ const  Task5 = (props) => {
           
         </View>
       }
-        <Dialog dialogShow={dialogShow} dialogText={dialogText} setDialogShow={ setDialogShow }/>
     </View>
   );
 }
@@ -223,4 +245,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default Task5;
+export default VideoComponent;

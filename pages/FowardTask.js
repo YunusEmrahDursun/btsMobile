@@ -6,22 +6,21 @@ import Settings from '../Settings';
 import axios, * as others from 'axios';
 import moment from 'moment';
 import 'moment/locale/tr';
-import Dialog from './Dialog'
+
 moment.locale('tr');
-const  Tab2 = (props) => {
+const  FowardTask = (props) => {
   const { state, dispatch } = useStoreContext();
   const [selectedTask, setSelectedTask] = useState(props.selectedTask);
   const [maskLoading, setMaskLoading] = useState(false);
 
-  const [dialogText, setDialogText] = useState("");
-  const [dialogShow, setDialogShow] = useState(false);
+
 
   const convertDateFull = (_value) => {
     return moment(_value).format('Do MMMM YYYY, HH:mm');
   }
  
   const back = () => { 
-    props.setTab(1);
+    props.setTab('forwardList');
   }
   
   const getColor = (status) => { 
@@ -39,18 +38,19 @@ const  Tab2 = (props) => {
     }
     
   }
-  const transferTask = () => { 
+  const sendFowardTask = (status) => { 
     setMaskLoading(true);
   
-    axios.post( Settings.baseUrl + '/isEmiriYonlendir/'+selectedTask.is_emri_id,{},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+    axios.post( Settings.baseUrl + '/yonlendirmeTalepCevap/'+selectedTask.is_emri_id,{status:status},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
       if(response.data?.status == 1){
-        setDialogText("İş emri transfer isteği iletildi!");
-        setDialogShow(true);
-        back();
+        props.dialog.setDialogText("Transfer isteği cevabı iletildi!");
+        props.dialog.setDialogShow(true);
+        props.setTab('forwardList');
+       
       }
       if(response.data?.message){
-        setDialogText(response.data.message);
-        setDialogShow(true);
+        props.dialog.setDialogText(response.data.message);
+        props.dialog.setDialogShow(true);
       }
     })
     .catch( (error) => {
@@ -100,27 +100,19 @@ const  Tab2 = (props) => {
             <View style={{height:220, margin:20}}>
               <Button
                 disabled={selectedTask.is_emri_durum_key != "open"}
-                title="İş Emrini Tamamla"
+                title="Kabul Et"
                 icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
                 buttonStyle={styles.button}
                 containerStyle={styles.buttonContainer}
-                onPress={()=> { props.setTab(4) }}
+                onPress={()=> sendFowardTask("1") }
               />
               <Button
                 disabled={selectedTask.is_emri_durum_key != "open"}
-                title="İş Emrini Yönlendir"
-                icon={<Icon name="arrow-forward" color="white" iconStyle={{ marginRight: 10 }} />}
+                title="Reddet"
+                icon={<Icon name="cancel" color="white" iconStyle={{ marginRight: 10 }} />}
                 buttonStyle={styles.button}
                 containerStyle={styles.buttonContainer}
-                onPress={transferTask}
-              />
-              <Button
-                disabled={selectedTask.is_emri_durum_key != "open"}
-                title="Teknik Servise Yönlendir"
-                icon={<Icon name="settings" color="white" iconStyle={{ marginRight: 10 }} />}
-                buttonStyle={styles.button}
-                containerStyle={styles.buttonContainer}
-                onPress={()=> { props.setTab(3) }}
+                onPress={ ()=> sendFowardTask("0") }
               />
               <View style={styles.backButton} >
                 <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={back} />
@@ -133,7 +125,7 @@ const  Tab2 = (props) => {
       }
 
       
-      <Dialog dialogShow={dialogShow} dialogText={dialogText} setDialogShow={ setDialogShow }/>
+      
     </View>
   );
 }
@@ -197,4 +189,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default Tab2;
+export default FowardTask;

@@ -1,37 +1,53 @@
 import { useState } from 'react';
-import Tab1 from './Tab1';
-import Tab2 from './Tab2';
-import Tab3 from './Tab3';
-import Tab4 from './Tab4';
-import Tab5 from './Tab5';
-import Tab6 from './Tab6';
+import TaskList from './TaskList';
+import SelectedTask from './SelectedTask';
+import ForwardSupport from './ForwardSupport';
+import TaskFinish from './TaskFinish';
+import Picture from './Picture';
+import Video from './Video';
+import ForwardList from './ForwardList';
+import FowardTask from './FowardTask';
+import FowardTaskRequest from './FowardTaskRequest';
+import Dialog from './Dialog'
 const  Home = () => {
 
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState('taskList');
   const [selectedTask, setSelectedTask] = useState(null);
-
+  const [dialogText, setDialogText] = useState("");
+  const [dialogShow, setDialogShow] = useState(false);
+  
   return (
     <>
-     
 
-      {/* liste */}
-      { tab == 1 && <Tab1 setSelectedTask={setSelectedTask} setTab={setTab}/> }
+      {/* task liste */}
+      { tab == 'taskList' && <TaskList setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
 
       {/* seçilen task */}
-      { tab == 2 && <Tab2 selectedTask={selectedTask}  setTab={setTab}/> }
+      { tab == 'selectedTask' && <SelectedTask selectedTask={selectedTask}  setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
+
+      {/* seçilen task yönlendirme talebi */}
+      { tab == 'fowardTaskRequest' && <FowardTaskRequest selectedTask={selectedTask}  setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
 
       {/* servise yönlendir */}
-      { tab == 3 && <Tab3 selectedTask={selectedTask}  setTab={setTab}/> }
+      { tab == 'forwardSupport' && <ForwardSupport selectedTask={selectedTask}  setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
 
       {/* taskı tamamla */}
-      { tab == 4 && <Tab4 selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab}/> }
+      { tab == 'taskFinish' && <TaskFinish selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
 
       {/* fotoğraf çek */}
-      { tab == 5 && <Tab5 selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab}/> }
+      { tab == 'picture' && <Picture selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
 
-      {/* fotoğraf çek */}
-      { tab == 6 && <Tab6 selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab}/> }
+      {/* kullanıcıya yönlendir */}
+      { tab == 'video' && <Video selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
+
+      {/* yönlendirme talebi listesi */}
+      { tab == 'forwardList' && <ForwardList setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
+
+      {/* seçilen forward task */}
+      { tab == 'forwardSelect' && <FowardTask selectedTask={selectedTask}  setTab={setTab}  dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
      
+
+      <Dialog dialogShow={dialogShow} dialogText={dialogText} setDialogShow={ setDialogShow }/>
     </>
   );
 }

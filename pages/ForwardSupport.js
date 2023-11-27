@@ -6,16 +6,13 @@ import Settings from '../Settings';
 import axios, * as others from 'axios';
 import moment from 'moment';
 import 'moment/locale/tr';
-import Dialog from './Dialog'
 moment.locale('tr');
 const requiredField = 'Bu alanın doldurulması zorunludur.';
-const  Tab3 = (props) => {
+const  ForwardSupport = (props) => {
   const { state, dispatch } = useStoreContext();
   const [selectedTask, setSelectedTask] = useState(props.selectedTask);
   const [maskLoading, setMaskLoading] = useState(false);
 
-  const [dialogText, setDialogText] = useState("");
-  const [dialogShow, setDialogShow] = useState(false);
 
   const [formSupport, setFormSupport] = useState({
     aciklama:"",
@@ -29,7 +26,7 @@ const  Tab3 = (props) => {
  
   
   const back = () => { 
-    props.setTab(1);
+    props.setTab('taskList');
   }
   
   const supportTask = () => { 
@@ -48,17 +45,17 @@ const  Tab3 = (props) => {
 
     axios.post( Settings.baseUrl + '/servisIstegiTalebi/'+selectedTask.is_emri_id,formSupport,{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
       if(response.data?.status == 1){
-        setDialogText("Servis talebi iletildi!");
-        setDialogShow(true);
+        props.dialog.setDialogText("Servis talebi iletildi!");
+        props.dialog.setDialogShow(true);
         back();
       }
       if(response.data?.message){
-        setDialogText(response.data.message);
-        setDialogShow(true);
+        props.dialog.setDialogText(response.data.message);
+        props.dialog.setDialogShow(true);
       }
     })
     .catch( (error) => {
-      setDialogText("Birşeyler ters gitti!");
+      props.dialog.setDialogText("Birşeyler ters gitti!");
       console.log(error);
     }).finally(()=> {setMaskLoading(false);} )
   }
@@ -105,7 +102,7 @@ const  Tab3 = (props) => {
                 onPress={supportTask}
               />
               <View style={styles.backButton} >
-                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab(2)}} />
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab('selectedTask')}} />
               </View>
                 
 
@@ -116,7 +113,6 @@ const  Tab3 = (props) => {
       }
 
       
-      <Dialog dialogShow={dialogShow} dialogText={dialogText} setDialogShow={ setDialogShow }/>
     </View>
   );
 }
@@ -180,4 +176,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default Tab3;
+export default ForwardSupport;

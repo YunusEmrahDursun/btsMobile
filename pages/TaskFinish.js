@@ -7,15 +7,12 @@ import axios, * as others from 'axios';
 import moment from 'moment';
 import 'moment/locale/tr';
 moment.locale('tr');
-import Dialog from './Dialog'
 const requiredField = 'Bu alanın doldurulması zorunludur.';
-const  Task4 = (props) => {
+const  TaskFinish = (props) => {
   const { state, dispatch } = useStoreContext();
   const [maskLoading, setMaskLoading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(props.selectedTask);
-  const [dialogText, setDialogText] = useState("");
-  const [dialogShow, setDialogShow] = useState(false);
-
+ 
   const [formComplete, setFormComplete] = useState({
     aciklama:"",
     files:[]
@@ -30,7 +27,7 @@ const  Task4 = (props) => {
   }, [props.selectedTask])
   
   const back = () => { 
-    props.setTab(1);
+    props.setTab('taskList');
   }
   
   const compeleteTask = () => { 
@@ -47,17 +44,18 @@ const  Task4 = (props) => {
   
     axios.post( Settings.baseUrl + '/isEmiriTamamla/'+selectedTask.is_emri_id,formComplete,{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
       if(response.data?.status == 1){
-        setDialogText("Servis talebi iletildi!");
-        setDialogShow(true);
+        props.dialog.setDialogText("Servis talebi iletildi!");
+        props.dialog.setDialogShow(true);
         back();
       }
       if(response.data?.message){
-        setDialogText(response.data.message);
-        setDialogShow(true);
+        props.dialog.setDialogText(response.data.message);
+        props.dialog.setDialogShow(true);
       }
     })
     .catch( (error) => {
-      setDialogText("Birşeyler ters gitti!");
+      props.dialog.setDialogText("Birşeyler ters gitti!");
+      props.dialog.setDialogShow(true);
       console.log(error);
     }).finally(()=> {setMaskLoading(false);} )
   }
@@ -120,10 +118,10 @@ const  Task4 = (props) => {
               </ScrollView>
             </View>
             <View style={{height:250, margin:20}}>
-              <Button title="Fotoğraf Çek" onPress={()=>{props.setTab(5)}} buttonStyle={styles.button}
+              <Button title="Fotoğraf Çek" onPress={()=>{props.setTab('picture')}} buttonStyle={styles.button}
                 icon={<Icon name="camera" color="white" iconStyle={{ marginRight: 10 }} />}
                 containerStyle={styles.buttonContainer}/>
-               <Button title="Video Çek" onPress={()=>{props.setTab(6)}} buttonStyle={styles.button}
+               <Button title="Video Çek" onPress={()=>{props.setTab('video')}} buttonStyle={styles.button}
                 icon={<Icon type='font-awesome'  name="video-camera" color="white" iconStyle={{ marginRight: 10 }} />}
                 containerStyle={styles.buttonContainer}/> 
               <Button
@@ -134,7 +132,7 @@ const  Task4 = (props) => {
                 onPress={compeleteTask}
               />
                <View style={styles.backButton} >
-                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab(2)}} />
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab('selectedTask')}} />
               </View>
 
             </View>
@@ -144,7 +142,6 @@ const  Task4 = (props) => {
       }
 
      
-      <Dialog dialogShow={dialogShow} dialogText={dialogText} setDialogShow={ setDialogShow }/>
     </View>
   );
 }
@@ -208,4 +205,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default Task4;
+export default TaskFinish;
