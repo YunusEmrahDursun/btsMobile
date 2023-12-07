@@ -1,6 +1,6 @@
-import { StyleSheet, View,ScrollView } from 'react-native';
+import { StyleSheet, View,ScrollView,Text as Text2 } from 'react-native';
 import { useState,useEffect } from 'react';
-import { Text,Icon,Button,Input ,ListItem  } from '@rneui/themed';
+import { Text,Icon,Button,Input ,ListItem   } from '@rneui/themed';
 import { useStoreContext } from '../Store';
 import Settings from '../Settings';
 import axios, * as others from 'axios';
@@ -8,47 +8,50 @@ import moment from 'moment';
 import 'moment/locale/tr';
 import Picture from './Picture';
 import Video from './Video';
+import {Picker} from '@react-native-picker/picker';
 moment.locale('tr');
-const requiredField = 'Bu alanın doldurulması zorunludur.';
-const  TaskFinish = (props) => {
+const  CreateTask = (props) => {
   const { state, dispatch } = useStoreContext();
   const [maskLoading, setMaskLoading] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(props.selectedTask);
-  const [tab, setTab] = useState(1);
+  const [binaList, setBinaList] = useState([])
+  const [bina, setBina] = useState(null);
+  const [tab, setTab] = useState(1)  
+
   const [form, setForm] = useState({
     aciklama:"",
     files:[]
   })
-  const [formCompleteError, setFormCompleteError] = useState({
-    aciklama:false,
-    
-  })
-
-  // useEffect(() => {
-  //   formCompleteChange("files",props.selectedTask.files || [])
-  // }, [props.selectedTask])
-  
   const back = () => { 
     props.setTab('taskList');
   }
   
-  const compeleteTask = () => { 
-    const tempError = {
+  useEffect(() => {
+    axios.get( Settings.baseUrl + '/subeBinalari/' ,{ headers: { 'authorization': state.userToken } }
+    ).then( (response) =>  {
+      const temp=response.data.map(i=> { return { value:i.bina_id,label: i.bina_adi }})
 
-      aciklama:form.aciklama.length == 0,
+      setBinaList(temp)
+    })
+    .catch( (error) => {
+      console.log(error);
+    }).finally(()=> {} )
 
+  }, [])
+ 
+  const createTask = () => { 
+    if(!bina){
+      props.dialog.setDialogText("Lütfen bir bina seçiniz");
+      props.dialog.setDialogShow(true);
+      return;
     }
-
-    setFormCompleteError({...formCompleteError, ...tempError});
-    if( Object.keys(tempError).some(key => tempError[key] ) ) return;
-
     setMaskLoading(true);
-  
-    axios.post( Settings.baseUrl + '/isEmiriTamamla/'+selectedTask.is_emri_id,form,{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+
+    axios.post( Settings.baseUrl + '/taskOlustur/',{bina_id:bina,is_emri_aciklama:form.aciklama,files:form.files},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
       if(response.data?.status == 1){
-        props.dialog.setDialogText("İşlem Tamamlandı!");
+        props.dialog.setDialogText("İş Oluşturuldu");
         props.dialog.setDialogShow(true);
-        back();
+        props.setTab('taskList');
+       
       }
       if(response.data?.message){
         props.dialog.setDialogText(response.data.message);
@@ -56,21 +59,14 @@ const  TaskFinish = (props) => {
       }
     })
     .catch( (error) => {
-      props.dialog.setDialogText("Birşeyler ters gitti!");
-      props.dialog.setDialogShow(true);
       console.log(error);
     }).finally(()=> {setMaskLoading(false);} )
   }
- 
-  const formCompleteChange = (_name,_value) => { 
+  const formChange = (_name,_value) => { 
     
-    const tempError = {...formCompleteError}
-    tempError[_name] = _value.length == 0;
-    setFormCompleteError(tempError);
     setForm({...form,[_name]:_value});
 
   }
-
   const removeFile = (item) => { 
 
     setForm({...form,files:form.files.filter(i=> i != item)});
@@ -78,26 +74,35 @@ const  TaskFinish = (props) => {
   }
   return (
     <>
-    { tab == 1 && <View style={styles.full}>
+      {  tab == 1 &&  <View style={styles.full}>
         <View style={{...styles.mask,display: maskLoading ? '': 'none'}}>
           <Button title="Solid" type="solid" loading buttonStyle={{backgroundColor:'#00000000'}}/>
         </View>
-
         {
-          selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
+          <View style={{ flex: 1, flexDirection: 'column'}}>
               <View style={{ flex: 1}}>
                 <View style={styles.container}>
                   <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
-                    <Text h5 >İş Emrini Tamamla</Text>
-                    <Icon  type='font-awesome' style={{marginRight:10,marginBottom:2}} name='check'  color='#183153' />  
+                    <Text h5 >İş Oluştur</Text>
                   </View>
                   <View style={styles.divider} ></View>
                 </View>
                 <ScrollView>
                   <View style={{margin:20}}>
-                    <Input onChangeText={(e)=> formCompleteChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama' errorMessage={formCompleteError.aciklama && requiredField} />
-
-                    {
+                    <Input onChangeText={(e)=> formChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama'  />
+                    <Text style={styles.detailText}>{`Bina seçiniz:`}</Text>
+                    <Picker
+                        selectedValue={bina}
+                        onValueChange={(itemValue, itemIndex) =>
+                          setBina(itemValue)
+                        }>
+                            <Picker.Item key={0} label={"Seçiniz"} value={null} />
+                        {
+                          binaList.map(item=> <Picker.Item key={item.value} label={item.label} value={item.value} />)
+                        }  
+                        
+                      </Picker>
+                      {
                       form.files && form.files.map((item, i) => (
                         <ListItem key={i} style={{marginLeft:10}}>
                           <ListItem.Content >
@@ -129,14 +134,14 @@ const  TaskFinish = (props) => {
                   icon={<Icon type='font-awesome'  name="video-camera" color="white" iconStyle={{ marginRight: 10 }} />}
                   containerStyle={styles.buttonContainer}/> 
                 <Button
-                  title="İş Emrini Tamamla"
+                  title="İşi Oluştur"
                   icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
-                  onPress={compeleteTask}
+                  onPress={createTask}
                 />
                 <View style={styles.backButton} >
-                  <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab('selectedTask')}} />
+                  <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> { back()}} />
                 </View>
 
               </View>
@@ -144,9 +149,9 @@ const  TaskFinish = (props) => {
             
           </View>
         }
-
+      </View>
+      }
       
-      </View>}
       {
         tab == 2 && <Picture selectedTask={form} setSelectedTask={setForm} setTab={setTab} dialog={props.dialog}/> 
       }
@@ -154,7 +159,6 @@ const  TaskFinish = (props) => {
         tab == 3 && <Video selectedTask={form} setSelectedTask={setForm} setTab={setTab} dialog={props.dialog}/>
       }
     </>
-   
   );
 }
 
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
   },
   backButton:{
     width:70,
-    borderRadius: 20,
+    borderRadius: 20
   },
   divider:{
     width:'100%',
@@ -217,4 +221,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default TaskFinish;
+export default CreateTask;

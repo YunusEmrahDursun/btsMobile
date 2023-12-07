@@ -3,8 +3,8 @@ import TaskList from './TaskList';
 import SelectedTask from './SelectedTask';
 import ForwardSupport from './ForwardSupport';
 import TaskFinish from './TaskFinish';
-import Picture from './Picture';
-import Video from './Video';
+import CreateTask from './CreateTask';
+
 import ForwardList from './ForwardList';
 import FowardTask from './FowardTask';
 import FowardTaskRequest from './FowardTaskRequest';
@@ -35,10 +35,10 @@ const  Home = () => {
       { tab == 'taskFinish' && <TaskFinish selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
 
       {/* fotoğraf çek */}
-      { tab == 'picture' && <Picture selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
+      {/* { tab == 'picture' && <Picture selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> } */}
 
-      {/* kullanıcıya yönlendir */}
-      { tab == 'video' && <Video selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
+      {/* video çek */}
+      {/* { tab == 'video' && <Video selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> } */}
 
       {/* yönlendirme talebi listesi */}
       { tab == 'forwardList' && <ForwardList setSelectedTask={setSelectedTask} setTab={setTab} dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
@@ -46,6 +46,9 @@ const  Home = () => {
       {/* seçilen forward task */}
       { tab == 'forwardSelect' && <FowardTask selectedTask={selectedTask}  setTab={setTab}  dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
      
+      {/* task oluştur */}
+      { tab == 'createTask' && <CreateTask   setTab={setTab}  dialog={{ dialogText,setDialogText,dialogShow,setDialogShow}}/> }
+          
 
       <Dialog dialogShow={dialogShow} dialogText={dialogText} setDialogShow={ setDialogShow }/>
     </>

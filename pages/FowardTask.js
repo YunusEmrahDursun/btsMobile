@@ -80,21 +80,32 @@ const  FowardTask = (props) => {
               </View>
               <ScrollView>
                 <View style={{margin:20}}>
-                  
-                  <Text style={styles.detailText}>{`Açıklama: ${selectedTask.is_emri_aciklama}`}</Text>
-                  <Text style={styles.detailText}>{`Bina Adı: ${selectedTask.bina_adi}`}</Text>
-                  <Text style={styles.detailText}>{`Adres: ${selectedTask.adres}`}</Text>
-                  <Text style={styles.detailText}>{`İl: ${selectedTask.il_adi}`}</Text>
-                  <Text style={styles.detailText}>{`İlçe: ${selectedTask.ilce_adi}`}</Text>
-                  { selectedTask.ariza_bildiren_ad_soyad && <Text style={styles.detailText}>{`Arıza Bildiren: ${selectedTask.ariza_bildiren_ad_soyad}`}</Text>}
-                  { selectedTask.ariza_bildiren_telefon && <Text style={styles.detailText}>{`Telefon Numarası: ${selectedTask.ariza_bildiren_telefon}`}</Text>}
-                  <Text style={styles.detailText}>{`Oluşturulma Tarihi: ${convertDateFull(selectedTask.is_emri_olusturma_tarihi)}`}</Text>
-                  { selectedTask.is_emri_sonuc_aciklama && <>
-                    <Text style={styles.detailText}>{`Sonuç: ${selectedTask.is_emri_sonuc_aciklama}`}</Text>
-                    <Text style={styles.detailText}>{`Güncelleme Tarihi: ${convertDateFull(selectedTask.guncellenme_zamani)}`}</Text>
-                  </>}
-                  
-                </View>
+                    
+                    <Text style={styles.boldText} >Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama}</Text>
+                    <Text style={styles.boldText}>Bina Adı </Text><Text style={styles.detailText}>{selectedTask.bina_adi}</Text>
+                    <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres}</Text>
+                    <Text style={styles.boldText}>İl </Text><Text style={styles.detailText}>{selectedTask.il_adi}</Text>
+                    <Text style={styles.boldText}>İlçe </Text><Text style={styles.detailText}>{selectedTask.ilce_adi}</Text>
+                    { selectedTask.ariza_bildiren_ad_soyad && 
+                      <>
+                        <Text style={styles.boldText}>Arıza Bildiren </Text>
+                        <Text style={styles.detailText}>{selectedTask.ariza_bildiren_ad_soyad}</Text>
+                      </>
+                    }
+                    { selectedTask.ariza_bildiren_telefon && 
+                    <>
+                      <Text style={styles.boldText}>Telefon Numarası </Text>
+                      <Text style={styles.detailText}>{selectedTask.ariza_bildiren_telefon}</Text>
+                    </>
+                    
+                    }
+                    <Text style={styles.boldText}>Oluşturulma Tarihi </Text><Text style={styles.detailText}>{convertDateFull(selectedTask.is_emri_olusturma_tarihi)}</Text>
+                    { selectedTask.is_emri_sonuc_aciklama && <>
+                      <Text style={styles.boldText}>Sonuç </Text>  <Text style={styles.detailText}>{selectedTask.is_emri_sonuc_aciklama}</Text>
+                      <Text style={styles.boldText}>Güncelleme Tarihi </Text> <Text style={styles.detailText}>{convertDateFull(selectedTask.guncellenme_zamani)}</Text>
+                    </>}
+                    
+                  </View>
               </ScrollView>
             </View>
             <View style={{height:220, margin:20}}>

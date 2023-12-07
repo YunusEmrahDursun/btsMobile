@@ -8,12 +8,13 @@ import Settings from '../Settings';
 import axios, * as others from 'axios';
 import moment from 'moment';
 import 'moment/locale/tr';
+import * as VideoThumbnails from 'expo-video-thumbnails';
+import * as FileSystem from 'expo-file-system';
 moment.locale('tr');
 const  VideoComponent = (props) => {
   const { state, dispatch } = useStoreContext();
   
   const [maskLoading, setMaskLoading] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(props.selectedTask);
 
 
   const [hasPermission, setHasPermission] = useState(null);
@@ -67,9 +68,12 @@ const  VideoComponent = (props) => {
   
     return formData;
   };
-  const saveVideo = () => { 
+  const saveVideo = async () => { 
     setMaskLoading(true);
-    createFormData(videoUri)
+    
+    const compressedVideoUri = await compressVideo(videoUri);
+
+    createFormData(compressedVideoUri)
     .then((formData) => {
       axios.post(Settings.baseUrl + '/fileUpload', formData, {
         headers: {
@@ -78,13 +82,15 @@ const  VideoComponent = (props) => {
         },
       })
       .then(response => {
-        
+        console.log(response.data)
         if(response.data?.status == 1){
-          const tempFiles= selectedTask.files ? [...selectedTask.files] : [];
+          const tempFiles= props.selectedTask.files ? [...props.selectedTask.files] : [];
           tempFiles.push(response.data.message[0].pathName)
-          props.setSelectedTask({...selectedTask, files:tempFiles})
+          props.setSelectedTask({...props.selectedTask, files:tempFiles})
           setVideoUri(null);
-          props.setTab('taskFinish');
+          props.dialog.setDialogText("Bir Adet Video Yüklendi!");
+          props.dialog.setDialogShow(true);
+          props.setTab(1);
         }else{
           props.dialog.setDialogText("Birşeyler ters gitti!");
           props.dialog.setDialogShow(true);
@@ -101,6 +107,20 @@ const  VideoComponent = (props) => {
   const takeVideoAgain = () => { 
     setVideoUri(null)
    }
+   const compressVideo = async (videoUri) => {
+    try {
+      const compressedUri = `${FileSystem.cacheDirectory}compressed_video.mp4`;
+
+      await FileSystem.copyAsync({
+        from: videoUri,
+        to: compressedUri,
+      });
+
+      return compressedUri;
+    } catch (error) {
+      throw error;
+    }
+  };
   return (
     <View style={styles.full}>
       <View style={{...styles.mask,display: maskLoading ? '': 'none'}}>
@@ -108,7 +128,7 @@ const  VideoComponent = (props) => {
       </View>
 
       {
-         selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
+         props.selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
             <View style={{ flex: 1}}>
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
@@ -174,7 +194,7 @@ const  VideoComponent = (props) => {
                 onPress={saveVideo}
               />}
               <View style={styles.backButton} >
-                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab('taskFinish')}} />
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab(1)}} />
               </View>
 
             </View>

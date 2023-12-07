@@ -39,7 +39,6 @@ const  FowardTaskRequest = (props) => {
   }
  
   const transferTask = () => { 
-    console.log(yonlendirilen)
     if(!yonlendirilen){
       props.dialog.setDialogText("Lütfen bir kullanıcı seçiniz");
       props.dialog.setDialogShow(true);

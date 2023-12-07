@@ -105,22 +105,24 @@ const  TaskList = (props) => {
                   <>
                     {
                       data.length != 0 ? data.map((item, i) => (
-                        <ListItem key={i} bottomDivider onPress={()=> openTask(item)} style={{marginLeft:10}}>
-                          {/* <Icon name={item.icon} /> */}
-                          <ListItem.Content >
-                            <ListItem.Title>
-                              <View style={{display:'flex',width:'100%',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
-                                <View style={{ marginRight:10,width:10,height:10,borderRadius:20,backgroundColor:getColor(item.is_emri_durum_key) }}/>
-                                <Text style={{width:50}}>{item.is_emri_id}</Text>
-                                <View style={{width:150}}>
-                                  <Text2 ellipsizeMode='tail' numberOfLines={1} style={{textAlign:'left'}}>{item.bina_adi}</Text2>
+                        <View key={i}  style={styles.listItemDivider} >
+                          <ListItem   onPress={()=> openTask(item)} >
+                            {/* <Icon name={item.icon} /> */}
+                            <ListItem.Content  >
+                              <ListItem.Title>
+                                <View style={{display:'flex',width:'100%',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
+                                  <View style={{ marginRight:10,width:10,height:10,borderRadius:20,backgroundColor:getColor(item.is_emri_durum_key) }}/>
+                                  <Text style={{width:50}}>{item.is_emri_id}</Text>
+                                  <View style={{width:150}}>
+                                    <Text2 ellipsizeMode='tail' numberOfLines={1} style={{textAlign:'left'}}>{item.bina_adi}</Text2>
+                                  </View>
                                 </View>
-                              </View>
-                            </ListItem.Title>
-                          </ListItem.Content>
-                          <Text style={{fontSize:12}}>{convertDate(item.is_emri_olusturma_tarihi)}</Text>
-                          <ListItem.Chevron />
-                        </ListItem>
+                              </ListItem.Title>
+                            </ListItem.Content>
+                            <Text style={{fontSize:12}}>{convertDate(item.is_emri_olusturma_tarihi)}</Text>
+                            <ListItem.Chevron />
+                          </ListItem>
+                        </View>
                       )) :  <View style={styles.noRecord}>
                         
                         <Icon type='font-awesome' style={{marginRight:5,marginBottom:0}} name='exclamation-circle'  color='#183153'/>
@@ -135,9 +137,17 @@ const  TaskList = (props) => {
           </View>
           <View style={{height:150, margin:20}}>
             
+          <Button
+              title={"İş Oluştur"}
+              icon={<Icon name="add" color="white" iconStyle={{ marginRight: 10 }} />}
+              onPress={()=> {props.setTab('createTask');}}
+              buttonStyle={styles.button}
+              containerStyle={styles.buttonContainer}
+            />
+
             <Button
               title={"Yönlendirme Talepleri"}
-              icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
+              icon={<Icon name="arrow-forward" color="white" iconStyle={{ marginRight: 10 }} />}
               onPress={()=> {props.setTab('forwardList');}}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
@@ -214,6 +224,13 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
   },
+  listItemDivider:{
+    width:'100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    paddingVertical: 10, 
+   
+  }
   
 });
 

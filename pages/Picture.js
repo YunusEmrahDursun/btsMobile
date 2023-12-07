@@ -7,13 +7,13 @@ import Settings from '../Settings';
 import axios, * as others from 'axios';
 import moment from 'moment';
 import 'moment/locale/tr';
+import { manipulateAsync,SaveFormat,FlipType  } from 'expo-image-manipulator'; 
+
 moment.locale('tr');
 const  Picture = (props) => {
   const { state, dispatch } = useStoreContext();
   
   const [maskLoading, setMaskLoading] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(props.selectedTask);
-  
 
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -38,13 +38,19 @@ const  Picture = (props) => {
       setMaskLoading(false);
     }
   }
-  const createFormData = async (photoUri) => {
+  const createFormData = async (photoUri, compressionQuality) => {
     const filePath = Platform.OS === 'android' ? `file://${photoUri}` : photoUri;
     const fileName = filePath.split('/').pop();
+  
+    const compressedImage = await manipulateAsync(
+      filePath,
+      [{ resize: { width: 300, height: 300 } }],
+      { compress: 1, format: SaveFormat.JPEG }
+    );
     const formData = new FormData();
     formData.append('file', {
-      uri: filePath,
-      type: 'image/jpeg', 
+      uri: compressedImage.uri,
+      type: 'image/jpeg',
       name: fileName,
     });
   
@@ -64,11 +70,13 @@ const  Picture = (props) => {
       .then(response => {
         
         if(response.data?.status == 1 ){
-          const tempFiles= selectedTask.files ? [...selectedTask.files] : [];
+          const tempFiles= props.selectedTask.files ? [...props.selectedTask.files] : [];
           tempFiles.push(response.data.message[0].pathName)
-          props.setSelectedTask({...selectedTask, files:tempFiles})
+          props.setSelectedTask({...props.selectedTask, files:tempFiles})
           setPhotoUri(null);
-          props.setTab('taskFinish');
+          props.dialog.setDialogText("Bir Adet Fotoğraf Yüklendi!");
+          props.dialog.setDialogShow(true);
+          props.setTab(1);
         }else{
           props.dialog.setDialogText("Birşeyler ters gitti!");
           props.dialog.setDialogShow(true);
@@ -95,7 +103,7 @@ const  Picture = (props) => {
       </View>
 
       {
-         selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
+         props.selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
             <View style={{ flex: 1}}>
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
@@ -149,7 +157,7 @@ const  Picture = (props) => {
                 onPress={savePhoto}
               />}
               <View style={styles.backButton} >
-                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab('taskFinish')}} />
+                <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab(1)}} />
               </View>
 
             </View>
