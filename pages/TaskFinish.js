@@ -76,6 +76,8 @@ const  TaskFinish = (props) => {
     setForm({...form,files:form.files.filter(i=> i != item)});
 
   }
+ 
+  
   return (
     <>
     { tab == 1 && <View style={styles.full}>
@@ -95,7 +97,7 @@ const  TaskFinish = (props) => {
                 </View>
                 <ScrollView>
                   <View style={{margin:20}}>
-                    <Input onChangeText={(e)=> formCompleteChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama' errorMessage={formCompleteError.aciklama && requiredField} />
+                    <Input value={form.aciklama} onChangeText={(e)=> formCompleteChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama' errorMessage={formCompleteError.aciklama && requiredField} />
 
                     {
                       form.files && form.files.map((item, i) => (
@@ -122,10 +124,10 @@ const  TaskFinish = (props) => {
                 </ScrollView>
               </View>
               <View style={{height:250, margin:20}}>
-                <Button title="Fotoğraf Çek" onPress={()=>{setTab(2)}} buttonStyle={styles.button}
+                <Button disabled={form.files.length >= 3} title="Fotoğraf Çek" onPress={()=>{setTab(2)}} buttonStyle={styles.button}
                   icon={<Icon name="camera" color="white" iconStyle={{ marginRight: 10 }} />}
                   containerStyle={styles.buttonContainer}/>
-                <Button title="Video Çek" onPress={()=>{setTab(3)}} buttonStyle={styles.button}
+                <Button disabled={form.files.length >= 3} title="Video Çek" onPress={()=>{setTab(3)}} buttonStyle={styles.button}
                   icon={<Icon type='font-awesome'  name="video-camera" color="white" iconStyle={{ marginRight: 10 }} />}
                   containerStyle={styles.buttonContainer}/> 
                 <Button

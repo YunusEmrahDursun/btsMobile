@@ -8,6 +8,7 @@ import moment from 'moment';
 import 'moment/locale/tr';
 import Picture from './Picture';
 import Video from './Video';
+import CreateBina from './CreateBina';
 import {Picker} from '@react-native-picker/picker';
 moment.locale('tr');
 const  CreateTask = (props) => {
@@ -26,17 +27,20 @@ const  CreateTask = (props) => {
   }
   
   useEffect(() => {
-    axios.get( Settings.baseUrl + '/subeBinalari/' ,{ headers: { 'authorization': state.userToken } }
-    ).then( (response) =>  {
-      const temp=response.data.map(i=> { return { value:i.bina_id,label: i.bina_adi }})
+    if(tab == 1){
+      axios.get( Settings.baseUrl + '/subeBinalari/' ,{ headers: { 'authorization': state.userToken } }
+      ).then( (response) =>  {
+        const temp=response.data.map(i=> { return { value:i.bina_id,label: i.bina_adi }})
+  
+        setBinaList(temp)
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> {} )
+    }
+  
 
-      setBinaList(temp)
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> {} )
-
-  }, [])
+  }, [tab])
  
   const createTask = () => { 
     if(!bina){
@@ -72,6 +76,8 @@ const  CreateTask = (props) => {
     setForm({...form,files:form.files.filter(i=> i != item)});
 
   }
+
+  
   return (
     <>
       {  tab == 1 &&  <View style={styles.full}>
@@ -89,7 +95,7 @@ const  CreateTask = (props) => {
                 </View>
                 <ScrollView>
                   <View style={{margin:20}}>
-                    <Input onChangeText={(e)=> formChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama'  />
+                    <Input value={form.aciklama} onChangeText={(e)=> formChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama'  />
                     <Text style={styles.detailText}>{`Bina seçiniz:`}</Text>
                     <Picker
                         selectedValue={bina}
@@ -123,14 +129,22 @@ const  CreateTask = (props) => {
                         </ListItem>
                       ))
                     }
+                   
                   </View>
                 </ScrollView>
               </View>
-              <View style={{height:250, margin:20}}>
-                <Button title="Fotoğraf Çek" onPress={()=>{setTab(2)}} buttonStyle={styles.button}
+              <View style={{height:300, margin:20}}>
+                <Button
+                        title="Bina Ekle"
+                        icon={<Icon type='font-awesome' name="building" color="white" iconStyle={{ marginRight: 10 }} />}
+                        buttonStyle={styles.button}
+                        containerStyle={styles.buttonContainer}
+                        onPress={()=>{setTab(4)}}
+                      />
+                <Button disabled={form.files.length >= 3} title="Fotoğraf Çek" onPress={()=>{setTab(2)}} buttonStyle={styles.button}
                   icon={<Icon name="camera" color="white" iconStyle={{ marginRight: 10 }} />}
                   containerStyle={styles.buttonContainer}/>
-                <Button title="Video Çek" onPress={()=>{setTab(3)}} buttonStyle={styles.button}
+                <Button disabled={form.files.length >= 3} title="Video Çek" onPress={()=>{setTab(3)}} buttonStyle={styles.button}
                   icon={<Icon type='font-awesome'  name="video-camera" color="white" iconStyle={{ marginRight: 10 }} />}
                   containerStyle={styles.buttonContainer}/> 
                 <Button
@@ -157,6 +171,9 @@ const  CreateTask = (props) => {
       }
       {
         tab == 3 && <Video selectedTask={form} setSelectedTask={setForm} setTab={setTab} dialog={props.dialog}/>
+      }
+      {
+        tab == 4 && <CreateBina  setTab={setTab} dialog={props.dialog}/> 
       }
     </>
   );
