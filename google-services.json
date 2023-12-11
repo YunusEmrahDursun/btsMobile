@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "874560226137",
+    "project_id": "bts-5bf12",
+    "storage_bucket": "bts-5bf12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874560226137:android:a61eb6e6f1abf03d4cc248",
+        "android_client_info": {
+          "package_name": "com.bts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJWNoP21zSM3mZP8uKGIiMNMUE-vCHhEU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -90,38 +90,38 @@ const  SelectedTask = (props) => {
                 <View style={{margin:20}}>
                   { selectedTask.destek_talebi_id && <>
                     <Text style={{...styles.boldText,textAlign:'center'}}> -- Kabul Edilen Teklif -- </Text>
-                      <Text style={styles.boldText}>Firma Adı </Text><Text style={styles.detailText}>{selectedTask.firma_adi}</Text>
-                      <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.aciklama}</Text>
-                      <Text style={styles.boldText}>Fiyat </Text><Text style={styles.detailText}>{selectedTask.fiyat}</Text>
+                      <Text style={styles.boldText}>Firma Adı </Text><Text style={styles.detailText}>{selectedTask.firma_adi || ""}</Text>
+                      <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.aciklama || ""}</Text>
+                      <Text style={styles.boldText}>Fiyat </Text><Text style={styles.detailText}>{selectedTask.fiyat || ""}</Text>
                       <Text style={styles.boldText}>Firma İletişim </Text> 
                       <View style={{display:'flex',width:'100%',flexDirection:'row'}}>
-                          <Text style={styles.detailText}>{selectedTask.firma_iletisim}</Text>
-                          <Icon style={{marginLeft:10}} onPress={()=> callPhoneNumber(selectedTask.firma_iletisim)} type='font-awesome'  name='phone'  color='#183153' /> 
+                          <Text style={styles.detailText}>{selectedTask.firma_iletisim || ""}</Text>
+                          <Icon style={{marginLeft:10}} onPress={()=> callPhoneNumber(selectedTask.firma_iletisim || "")} type='font-awesome'  name='phone'  color='#183153' /> 
                       </View>
                       <View style={styles.divider} ></View>
                   </>}
-                  <Text style={styles.boldText} >Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama}</Text>
-                  <Text style={styles.boldText}>Bina Adı </Text><Text style={styles.detailText}>{selectedTask.bina_adi}</Text>
-                  <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres}</Text>
-                  <Text style={styles.boldText}>İl </Text><Text style={styles.detailText}>{selectedTask.il_adi}</Text>
-                  <Text style={styles.boldText}>İlçe </Text><Text style={styles.detailText}>{selectedTask.ilce_adi}</Text>
+                  <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama || ""}</Text>
+                  <Text style={styles.boldText}>Bina Adı </Text><Text style={styles.detailText}>{selectedTask.bina_adi || ""}</Text>
+                  <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres || ""}</Text>
+                  <Text style={styles.boldText}>İl </Text><Text style={styles.detailText}>{selectedTask.il_adi || ""}</Text>
+                  <Text style={styles.boldText}>İlçe </Text><Text style={styles.detailText}>{selectedTask.ilce_adi || ""}</Text>
                   { selectedTask.ariza_bildiren_ad_soyad && 
                     <>
                       <Text style={styles.boldText}>Arıza Bildiren </Text>
-                      <Text style={styles.detailText}>{selectedTask.ariza_bildiren_ad_soyad}</Text>
+                      <Text style={styles.detailText}>{selectedTask.ariza_bildiren_ad_soyad || ""}</Text>
                     </>
                   }
                   { selectedTask.ariza_bildiren_telefon && 
                    <>
                       <Text style={styles.boldText}>Telefon Numarası </Text> 
                       <View style={{display:'flex',width:'100%',flexDirection:'row'}}>
-                        <Text style={styles.detailText}>{selectedTask.ariza_bildiren_telefon}</Text>
-                        <Icon style={{marginLeft:10}} onPress={()=> callPhoneNumber(selectedTask.ariza_bildiren_telefon)} type='font-awesome'  name='phone'  color='#183153' /> 
+                        <Text style={styles.detailText}>{selectedTask.ariza_bildiren_telefon || ""}</Text>
+                        <Icon style={{marginLeft:10}} onPress={()=> callPhoneNumber(selectedTask.ariza_bildiren_telefon || "")} type='font-awesome'  name='phone'  color='#183153' /> 
                       </View>
                    </>
                   
                   }
-                  <Text style={styles.boldText}>Oluşturulma Tarihi </Text><Text style={styles.detailText}>{convertDateFull(selectedTask.is_emri_olusturma_tarihi)}</Text>
+                  <Text style={styles.boldText}>Oluşturulma Tarihi </Text><Text style={styles.detailText}>{convertDateFull(selectedTask.is_emri_olusturma_tarihi || "")}</Text>
                   
                   
                 </View>
@@ -145,7 +145,7 @@ const  SelectedTask = (props) => {
                 onPress={()=> {props.setTab('fowardTaskRequest')} }
               />
               <Button
-                disabled={selectedTask.is_emri_durum_key != "open" || selectedTask.destek_talebi_id}
+                disabled={selectedTask.is_emri_durum_key != "open" || selectedTask.destek_talebi_id != null}
                 title="Harcama İzni Al"
                 icon={<Icon name="settings" color="white" iconStyle={{ marginRight: 10 }} />}
                 buttonStyle={styles.button}
