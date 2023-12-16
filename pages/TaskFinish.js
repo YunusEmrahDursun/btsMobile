@@ -123,20 +123,22 @@ const  TaskFinish = (props) => {
                   </View>
                 </ScrollView>
               </View>
-              <View style={{height:250, margin:20}}>
-                <Button disabled={form.files.length >= 3} title="Fotoğraf Çek" onPress={()=>{setTab(2)}} buttonStyle={styles.button}
-                  icon={<Icon name="camera" color="white" iconStyle={{ marginRight: 10 }} />}
-                  containerStyle={styles.buttonContainer}/>
-                <Button disabled={form.files.length >= 3} title="Video Çek" onPress={()=>{setTab(3)}} buttonStyle={styles.button}
-                  icon={<Icon type='font-awesome'  name="video-camera" color="white" iconStyle={{ marginRight: 10 }} />}
-                  containerStyle={styles.buttonContainer}/> 
-                <Button
-                  title="İş Emrini Tamamla"
-                  icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
-                  buttonStyle={styles.button}
-                  containerStyle={styles.buttonContainer}
-                  onPress={compeleteTask}
-                />
+              <View style={{height:100, margin:20, display:'flex'}}>
+                <View style={{flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
+                  <Button disabled={form.files.length >= 3}  onPress={()=>{setTab(2)}} buttonStyle={styles.button}
+                    icon={<Icon name="camera" color="white"  />}
+                    containerStyle={styles.buttonContainer}/>
+                  <Button disabled={form.files.length >= 3}  onPress={()=>{setTab(3)}} buttonStyle={styles.button}
+                    icon={<Icon type='font-awesome'  name="video-camera" color="white"  />}
+                    containerStyle={styles.buttonContainer}/> 
+                  <Button
+                    icon={<Icon name="check" color="white"  />}
+                    buttonStyle={styles.button}
+                    containerStyle={styles.buttonContainer}
+                    onPress={compeleteTask}
+                  />
+                </View>
+                
                 <View style={styles.backButton} >
                   <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> {props.setTab('selectedTask')}} />
                 </View>
@@ -215,6 +217,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+    maxWidth:'33%',
+    flex:1,
+    marginLeft:5,
+    marginRight:5
   },
   
 });

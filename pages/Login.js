@@ -40,7 +40,9 @@ const  Login = () => {
     setLoginLoading(true);
     axios.post( Settings.baseUrl + '/login',form) .then( (response) =>  {
       if(response.data?.status == 1 && response.data?.token){
+        console.log(response.data)
         dispatch({ type: 'changeToken', payload: response.data.token });
+        dispatch({ type: 'changeType', payload: response.data.auth });
       }
       if(response.data?.message){
         setDialogText(response.data.message);

@@ -86,8 +86,8 @@ const  FowardTaskRequest = (props) => {
             <View style={{ flex: 1}}>
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
-                  <Text h5 >İş Emri Detayları</Text>
-                    <View    style={{maxWidth:150,backgroundColor:getColor(selectedTask.is_emri_durum_key),borderRadius:20,paddingLeft:10,paddingRight:10,paddingBottom:5,paddingTop:5}}>
+                  <Text h5 >İş Emrini Yönlendir</Text>
+                    <View style={{maxWidth:150,backgroundColor:getColor(selectedTask.is_emri_durum_key),borderRadius:20,paddingLeft:10,paddingRight:10,paddingBottom:5,paddingTop:5}}>
                     <Text2 ellipsizeMode='tail'  numberOfLines={1} style={{color:'#fff'}}>
                       {selectedTask.is_emri_durum_adi}
                     </Text2>
@@ -113,7 +113,7 @@ const  FowardTaskRequest = (props) => {
                 </View>
               </ScrollView>
             </View>
-            <View style={{height:220, margin:20}}>
+            <View style={{height:100, margin:20}}>
               <Button
                 disabled={selectedTask.is_emri_durum_key != "open"}
                 title="Yönlendir"

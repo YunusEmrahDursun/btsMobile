@@ -80,35 +80,27 @@ const  FowardTask = (props) => {
               </View>
               <ScrollView>
                 <View style={{margin:20}}>
-                    
-                    <Text style={styles.boldText} >Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama}</Text>
-                    <Text style={styles.boldText}>Bina Adı </Text><Text style={styles.detailText}>{selectedTask.bina_adi}</Text>
-                    <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres}</Text>
-                    <Text style={styles.boldText}>İl </Text><Text style={styles.detailText}>{selectedTask.il_adi}</Text>
-                    <Text style={styles.boldText}>İlçe </Text><Text style={styles.detailText}>{selectedTask.ilce_adi}</Text>
+                    <Text style={{...styles.boldText,textAlign:'center'}}> -- {selectedTask.bina_adi || ""} -- </Text>
                     { selectedTask.ariza_bildiren_ad_soyad && 
                       <>
                         <Text style={styles.boldText}>Arıza Bildiren </Text>
                         <Text style={styles.detailText}>{selectedTask.ariza_bildiren_ad_soyad}</Text>
                       </>
                     }
-                    { selectedTask.ariza_bildiren_telefon && 
+                    { selectedTask.ariza_bildiren_telefon && selectedTask.ariza_bildiren_telefon != "+90 (___) ___-__-__" && 
                     <>
                       <Text style={styles.boldText}>Telefon Numarası </Text>
                       <Text style={styles.detailText}>{selectedTask.ariza_bildiren_telefon}</Text>
                     </>
                     
                     }
-                    <Text style={styles.boldText}>Oluşturulma Tarihi </Text><Text style={styles.detailText}>{convertDateFull(selectedTask.is_emri_olusturma_tarihi)}</Text>
-                    { selectedTask.is_emri_sonuc_aciklama && <>
-                      <Text style={styles.boldText}>Sonuç </Text>  <Text style={styles.detailText}>{selectedTask.is_emri_sonuc_aciklama}</Text>
-                      <Text style={styles.boldText}>Güncelleme Tarihi </Text> <Text style={styles.detailText}>{convertDateFull(selectedTask.guncellenme_zamani)}</Text>
-                    </>}
+                    <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama}</Text>
+                    <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres}</Text>
                     
                   </View>
               </ScrollView>
             </View>
-            <View style={{height:220, margin:20}}>
+            <View style={{height:150, margin:20}}>
               <Button
                 disabled={selectedTask.is_emri_durum_key != "open"}
                 title="Kabul Et"
@@ -197,7 +189,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
   },
-  
+  boldText:{
+    fontWeight:900
+  }
 });
 
 export default FowardTask;

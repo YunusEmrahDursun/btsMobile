@@ -65,7 +65,6 @@ const  SelectedTask = (props) => {
   //     console.log(error);
   //   }).finally(()=> {setMaskLoading(false);} )
   // }
-  
   return (
     <View style={styles.full}>
       <View style={{...styles.mask,display: maskLoading ? '': 'none'}}>
@@ -93,25 +92,23 @@ const  SelectedTask = (props) => {
                       <Text style={styles.boldText}>Firma Adı </Text><Text style={styles.detailText}>{selectedTask.firma_adi || ""}</Text>
                       <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.aciklama || ""}</Text>
                       <Text style={styles.boldText}>Fiyat </Text><Text style={styles.detailText}>{selectedTask.fiyat || ""}</Text>
-                      <Text style={styles.boldText}>Firma İletişim </Text> 
-                      <View style={{display:'flex',width:'100%',flexDirection:'row'}}>
-                          <Text style={styles.detailText}>{selectedTask.firma_iletisim || ""}</Text>
-                          <Icon style={{marginLeft:10}} onPress={()=> callPhoneNumber(selectedTask.firma_iletisim || "")} type='font-awesome'  name='phone'  color='#183153' /> 
-                      </View>
+                      {selectedTask.firma_iletisim && <>
+                        <Text style={styles.boldText}>Firma İletişim </Text> 
+                        <View style={{display:'flex',width:'100%',flexDirection:'row'}}>
+                            <Text style={styles.detailText}>{selectedTask.firma_iletisim || ""}</Text>
+                            <Icon style={{marginLeft:10}} onPress={()=> callPhoneNumber(selectedTask.firma_iletisim || "")} type='font-awesome'  name='phone'  color='#183153' /> 
+                        </View>
+                      </>}
                       <View style={styles.divider} ></View>
                   </>}
-                  <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama || ""}</Text>
-                  <Text style={styles.boldText}>Bina Adı </Text><Text style={styles.detailText}>{selectedTask.bina_adi || ""}</Text>
-                  <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres || ""}</Text>
-                  <Text style={styles.boldText}>İl </Text><Text style={styles.detailText}>{selectedTask.il_adi || ""}</Text>
-                  <Text style={styles.boldText}>İlçe </Text><Text style={styles.detailText}>{selectedTask.ilce_adi || ""}</Text>
+                  <Text style={{...styles.boldText,textAlign:'center'}}> -- {selectedTask.bina_adi || ""} -- </Text>
                   { selectedTask.ariza_bildiren_ad_soyad && 
                     <>
                       <Text style={styles.boldText}>Arıza Bildiren </Text>
                       <Text style={styles.detailText}>{selectedTask.ariza_bildiren_ad_soyad || ""}</Text>
                     </>
                   }
-                  { selectedTask.ariza_bildiren_telefon && 
+                  { selectedTask.ariza_bildiren_telefon && selectedTask.ariza_bildiren_telefon != "+90 (___) ___-__-__" && 
                    <>
                       <Text style={styles.boldText}>Telefon Numarası </Text> 
                       <View style={{display:'flex',width:'100%',flexDirection:'row'}}>
@@ -121,37 +118,37 @@ const  SelectedTask = (props) => {
                    </>
                   
                   }
-                  <Text style={styles.boldText}>Oluşturulma Tarihi </Text><Text style={styles.detailText}>{convertDateFull(selectedTask.is_emri_olusturma_tarihi || "")}</Text>
-                  
+                  <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama || ""}</Text>
+                  <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres || ""}</Text>
                   
                 </View>
               </ScrollView>
             </View>
-            <View style={{height:220, margin:20}}>
-              <Button
-                disabled={selectedTask.is_emri_durum_key != "open"}
-                title="İş Emrini Tamamla"
-                icon={<Icon name="check" color="white" iconStyle={{ marginRight: 10 }} />}
-                buttonStyle={styles.button}
-                containerStyle={styles.buttonContainer}
-                onPress={()=> { props.setTab('taskFinish') }}
-              />
-              <Button
-                disabled={selectedTask.is_emri_durum_key != "open"}
-                title="İş Emrini Yönlendir"
-                icon={<Icon name="arrow-forward" color="white" iconStyle={{ marginRight: 10 }} />}
-                buttonStyle={styles.button}
-                containerStyle={styles.buttonContainer}
-                onPress={()=> {props.setTab('fowardTaskRequest')} }
-              />
-              <Button
-                disabled={selectedTask.is_emri_durum_key != "open" || selectedTask.destek_talebi_id != null}
-                title="Harcama İzni Al"
-                icon={<Icon name="settings" color="white" iconStyle={{ marginRight: 10 }} />}
-                buttonStyle={styles.button}
-                containerStyle={styles.buttonContainer}
-                onPress={()=> { props.setTab('forwardSupport') }}
-              />
+            <View style={{height:100, margin:20, display:'flex'}}>
+              <View style={{ display:'flex',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
+                <Button
+                  disabled={selectedTask.is_emri_durum_key != "open"}
+                  icon={<Icon name="check" color="white"  />}
+                  buttonStyle={styles.button}
+                  containerStyle={styles.buttonContainer}
+                  onPress={()=> { props.setTab('taskFinish') }}
+                />
+                <Button
+                  disabled={selectedTask.is_emri_durum_key != "open"}
+                  icon={<Icon name="arrow-forward" color="white"  />}
+                  buttonStyle={styles.button}
+                  containerStyle={styles.buttonContainer}
+                  onPress={()=> {props.setTab('fowardTaskRequest')} }
+                />
+                <Button
+                  disabled={selectedTask.is_emri_durum_key != "open" || selectedTask.destek_talebi_id != null}
+                  icon={<Icon name="settings" color="white" />}
+                  buttonStyle={styles.button}
+                  containerStyle={styles.buttonContainer}
+                  onPress={()=> { props.setTab('forwardSupport') }}
+                />
+              </View>
+              
               <View style={styles.backButton} >
                 <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={back} />
               </View>
@@ -223,6 +220,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+    maxWidth:'33%',
+    flex:1,
+    marginLeft:5,
+    marginRight:5
   },
   boldText:{
     fontWeight:900

@@ -8,6 +8,7 @@ const initialState = {
     userToken: "",
     pushToken:"",
     refreshData:true,
+    type:""
 };
 
 const storeReducer = (state, action) => {
@@ -39,13 +40,31 @@ const storeReducer = (state, action) => {
       };  
     case 'changeToken':
       try {
-        AsyncStorage.setItem( 'token', action.payload, );
+        AsyncStorage.setItem( 'token', action.payload );
       } catch (error) {
       }
       return {
         ...state,
         tab:"home",
         userToken: action.payload,
+      };
+    case 'changeType':
+      try {
+        AsyncStorage.setItem( 'type', action.payload );
+      } catch (error) {
+      }
+      return {
+        ...state,
+        type: action.payload,
+      };
+    case 'removeType':
+      try {
+        AsyncStorage.removeItem('type');
+      } catch (error) {
+      }
+      return {
+        ...state,
+        type: ""
       };
     default:
       return state;

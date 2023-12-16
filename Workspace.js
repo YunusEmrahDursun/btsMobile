@@ -4,6 +4,7 @@ import { useStoreContext } from './Store';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import Temizlik from './pages/Temizlik';
 import Settings from './Settings';
 import axios, * as others from 'axios';
 import * as Notifications from 'expo-notifications';
@@ -101,8 +102,7 @@ const  Workspace = () => {
   
 
  
-
-  useEffect( () => {
+  const checkTokenRequest = () => {
     AsyncStorage.getItem('token').then(value => {
       if (value !== null) {
         axios.post( Settings.baseUrl + '/checkToken' ,{ token:value })
@@ -116,14 +116,28 @@ const  Workspace = () => {
         })
       }
     });
-    
+  }
+
+  useEffect( () => {
+    AsyncStorage.getItem('type').then(value => {
+      if (value !== null) {
+        dispatch({ type: 'changeType', payload: value });
+        checkTokenRequest()
+      }else{
+        dispatch({ type: 'removeToken' });
+      }
+    });
+   
+  
   }, [])
   
+
   return (
     <>
       { state.tab == 'login' && <Login/>}
       { state.tab == 'register' && <Register/>}
-      { state.tab == 'home' && <Home/>}
+      { state.tab == 'home' && state.type == 'teknik' && <Home/>}
+      { state.tab == 'home' && state.type == 'temizlik' && <Temizlik/>}
 
     </>
   );

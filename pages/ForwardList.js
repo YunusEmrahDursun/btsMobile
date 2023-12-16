@@ -15,8 +15,6 @@ const  ForwardList = (props) => {
 
   const [maskLoading, setMaskLoading] = useState(false);
 
-
-
   
   useEffect(() => {
       getData();
@@ -137,10 +135,9 @@ const  ForwardList = (props) => {
                 }
               </ScrollView>
           </View>
-          <View style={{height:150, margin:20}}>
+          <View style={{height:50, margin:20, display:'flex',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
             <Button
-              title={"İş Emirlerim"}
-              icon={<Icon name="folder-open" color="white" iconStyle={{ marginRight: 10 }} />}
+              icon={<Icon name="folder-open" color="white" />}
               onPress={()=> props.setTab('taskList')}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
@@ -148,8 +145,7 @@ const  ForwardList = (props) => {
 
             
             <Button
-              title="Oturumu Kapat"
-              icon={<Icon name="power-off" color="white" iconStyle={{ marginRight: 10 }} />}
+              icon={<Icon name="power-off" color="white" />}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
               onPress={exit}
@@ -216,6 +212,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+    maxWidth:'33%',
+    flex:1,
+    marginLeft:5,
+    marginRight:5
   },
   listItemDivider:{
     width:'100%',

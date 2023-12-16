@@ -135,19 +135,17 @@ const  TaskList = (props) => {
                 }
               </ScrollView>
           </View>
-          <View style={{height:150, margin:20}}>
+          <View style={{height:50, margin:20, display:'flex',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
             
-          <Button
-              title={"İş Oluştur"}
-              icon={<Icon name="add" color="white" iconStyle={{ marginRight: 10 }} />}
+            <Button
+              icon={<Icon name="add" color="white"  />}
               onPress={()=> {props.setTab('createTask');}}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
             />
 
             <Button
-              title={"Yönlendirme Talepleri"}
-              icon={<Icon name="arrow-forward" color="white" iconStyle={{ marginRight: 10 }} />}
+              icon={<Icon name="arrow-forward" color="white"  />}
               onPress={()=> {props.setTab('forwardList');}}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
@@ -155,8 +153,7 @@ const  TaskList = (props) => {
 
             
             <Button
-              title="Oturumu Kapat"
-              icon={<Icon name="power-off" color="white" iconStyle={{ marginRight: 10 }} />}
+              icon={<Icon name="power-off" color="white" />}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
               onPress={exit}
@@ -223,6 +220,11 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+    maxWidth:'33%',
+    flex:1,
+    marginLeft:5,
+    marginRight:5
+    
   },
   listItemDivider:{
     width:'100%',
