@@ -34,7 +34,9 @@ const  TaskFinish = (props) => {
     }).finally(()=> setMaskLoading(false) )
 
   }
-    
+  const exit = () => { 
+    dispatch({ type: 'removeToken' });
+  }
  
   return (
     <>
@@ -70,18 +72,22 @@ const  TaskFinish = (props) => {
                   </View>
                 </ScrollView>
               </View>
-              <View style={{height:50, margin:20}}>
+              <View style={{height:50, margin:20, display:'flex',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
                 <Button
                   disabled={data==null}
-                  title="QR Okut"
                   icon={<Icon name="camera" color="white" iconStyle={{ marginRight: 10 }} />}
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
                   onPress={()=>{setTab(2)}}
                 />
-
+                <Button
+                  icon={<Icon name="power-off" color="white" />}
+                  buttonStyle={styles.button}
+                  containerStyle={styles.buttonContainer}
+                  onPress={exit}
+                />
               </View>
-          
+                      
             
           </View>
         }
@@ -152,6 +158,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
+    maxWidth:'33%',
+    flex:1,
+    marginLeft:5,
+    marginRight:5
   },
   boldText:{
     fontWeight:900

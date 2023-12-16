@@ -40,14 +40,17 @@ const  Login = () => {
     setLoginLoading(true);
     axios.post( Settings.baseUrl + '/login',form) .then( (response) =>  {
       if(response.data?.status == 1 && response.data?.token){
-        console.log(response.data)
-        dispatch({ type: 'changeToken', payload: response.data.token });
-        dispatch({ type: 'changeType', payload: response.data.auth });
+        const yetki = response.data.auth
+        if(["temizlik","teknik"].includes(yetki)){
+          dispatch({ type: 'changeToken', payload: response.data.token });
+          dispatch({ type: 'changeType', payload: yetki });
+        }else{
+          setDialogText("Bu yetkiye sahip kullanıcı mobil girişi yapamaz!");
+          setDialogShow(true);
+        }
+
       }
-      if(response.data?.message){
-        setDialogText(response.data.message);
-        setDialogShow(true);
-      }
+      
     })
     .catch( (error) => {
       console.log(error);
