@@ -41,7 +41,7 @@ const  FowardTask = (props) => {
   const sendFowardTask = (status) => { 
     setMaskLoading(true);
   
-    axios.post( Settings.baseUrl + '/yonlendirmeTalepCevap/'+selectedTask.is_emri_id,{status:status},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+    axios.post( Settings.baseUrl + '/yonlendirmeTalepCevap/'+selectedTask.is_emri_id,{status:status},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
       if(response.data?.status == 1){
         props.dialog.setDialogText("Transfer isteği cevabı iletildi!");
         props.dialog.setDialogShow(true);

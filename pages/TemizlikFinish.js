@@ -17,6 +17,7 @@ const  TaskFinish = (props) => {
       getData();
   }, [tab])
 
+
   
   const getData = () => { 
     setMaskLoading(true);
@@ -51,7 +52,7 @@ const  TaskFinish = (props) => {
                 <View style={styles.container}>
                   <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
                     <Text h5 >Bina Temizlik</Text>
-                    <Icon  type='font-awesome' style={{marginRight:10,marginBottom:2}} name='truck'  color='#183153' />  
+                    <Icon onPress={getData} type='font-awesome' style={{marginRight:10,marginBottom:2}} name='refresh'  color='#183153' />
                   </View>
                   <View style={styles.divider} ></View>
                 </View>
@@ -95,7 +96,7 @@ const  TaskFinish = (props) => {
       
       </View>}
     {
-      tab == 2 && <Qr  data={data} setTab={setTab} dialog={props.dialog}/> 
+      tab == 2 && <Qr data={data} setTab={setTab} dialog={props.dialog}/> 
     }
     
     </>

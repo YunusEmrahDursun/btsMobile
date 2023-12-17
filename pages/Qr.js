@@ -39,7 +39,7 @@ const compeleteTask = () => {
 
     setMaskLoading(true);
   
-    axios.post( Settings.baseUrl + '/temizlikTamamla/',props.data,{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+    axios.post( Settings.baseUrl + '/temizlikTamamla/',props.data,{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
       if(response.data?.status == 1){
         props.dialog.setDialogText("İşlem Tamamlandı!");
         props.dialog.setDialogShow(true);

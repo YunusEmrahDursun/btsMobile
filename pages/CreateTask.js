@@ -50,7 +50,7 @@ const  CreateTask = (props) => {
     }
     setMaskLoading(true);
 
-    axios.post( Settings.baseUrl + '/taskOlustur/',{bina_id:bina,is_emri_aciklama:form.aciklama,files:form.files},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+    axios.post( Settings.baseUrl + '/taskOlustur/',{bina_id:bina,is_emri_aciklama:form.aciklama,files:form.files},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
       if(response.data?.status == 1){
         props.dialog.setDialogText("İş Oluşturuldu");
         props.dialog.setDialogShow(true);

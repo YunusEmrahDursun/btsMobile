@@ -10,6 +10,8 @@ import axios, * as others from 'axios';
 import * as Notifications from 'expo-notifications';
 import { Camera } from 'expo-camera';
 import * as Device from "expo-device";
+import * as Location from 'expo-location';
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
       shouldShowAlert: true,
@@ -86,7 +88,26 @@ const  Workspace = () => {
 
     
 }, []);
-  
+
+  const getLocation = () => { 
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status == 'granted') {
+        let location = await Location.getCurrentPositionAsync({});
+        dispatch({ type: 'changeLocation', payload: location });
+      }
+      
+    })();
+  }
+  useEffect(() => {
+    getLocation();
+
+    const intervalId = setInterval(() => {
+      getLocation();
+    }, 5 * 60 * 1000); 
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
 

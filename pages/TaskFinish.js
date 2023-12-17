@@ -44,7 +44,7 @@ const  TaskFinish = (props) => {
 
     setMaskLoading(true);
   
-    axios.post( Settings.baseUrl + '/isEmiriTamamla/'+selectedTask.is_emri_id,form,{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+    axios.post( Settings.baseUrl + '/isEmiriTamamla/'+selectedTask.is_emri_id,form,{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
       if(response.data?.status == 1){
         props.dialog.setDialogText("İşlem Tamamlandı!");
         props.dialog.setDialogShow(true);

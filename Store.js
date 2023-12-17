@@ -8,7 +8,8 @@ const initialState = {
     userToken: "",
     pushToken:"",
     refreshData:true,
-    type:""
+    type:"",
+    location:{latitude:"",longitude:""}
 };
 
 const storeReducer = (state, action) => {
@@ -27,6 +28,16 @@ const storeReducer = (state, action) => {
       return {
         ...state,
         tab: action.payload,
+      };
+    case 'changeLocation':
+      let tempData={latitude:"",longitude:""};
+      if(action.payload){
+        tempData.latitude = action.payload.coords.latitude;
+        tempData.longitude = action.payload.coords.longitude;
+      }
+      return {
+        ...state,
+        location: JSON.stringify(tempData),
       };
     case 'removeToken':
       try {

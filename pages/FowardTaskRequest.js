@@ -46,7 +46,7 @@ const  FowardTaskRequest = (props) => {
     }
     setMaskLoading(true);
   
-    axios.post( Settings.baseUrl + '/isEmiriYonlendir/'+selectedTask.is_emri_id,{yonlendirilen_kullanici_id:yonlendirilen},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+    axios.post( Settings.baseUrl + '/isEmiriYonlendir/'+selectedTask.is_emri_id,{yonlendirilen_kullanici_id:yonlendirilen},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
       if(response.data?.status == 1){
         props.dialog.setDialogText("Kullanıcıya transfer isteği gönderildi!");
         props.dialog.setDialogShow(true);
