@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
     width:'100%',
     height:'100%',
     position:"absolute",
-    zIndex:2,
+    zIndex:99999,
+    elevation:1,
     backgroundColor:'#000000aa',
     alignItems: 'center',
     justifyContent: 'center'

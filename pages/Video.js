@@ -3,12 +3,12 @@ import { Video } from 'expo-av';
 import { useState,useEffect } from 'react';
 import { Text,Icon,Button  } from '@rneui/themed';
 import { Camera } from 'expo-camera';
+import { Audio } from 'expo-av';
 import { useStoreContext } from '../Store';
 import Settings from '../Settings';
 import axios, * as others from 'axios';
 import moment from 'moment';
 import 'moment/locale/tr';
-import * as VideoThumbnails from 'expo-video-thumbnails';
 import * as FileSystem from 'expo-file-system';
 moment.locale('tr');
 const  VideoComponent = (props) => {
@@ -26,8 +26,12 @@ const  VideoComponent = (props) => {
  
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      const cameraPerm = await Camera.requestCameraPermissionsAsync();
+
+      const AudioPerm = await Audio.requestPermissionsAsync();
+      
+      setHasPermission( AudioPerm.status === 'granted' && cameraPerm.status === 'granted' );
+
     })();
   }, []);
 
@@ -51,7 +55,6 @@ const  VideoComponent = (props) => {
 
   const stopRecording = () => {
     if (cameraRef) {
-      setMaskLoading(true);
       cameraRef.stopRecording();
       setIsRecording(false);
     }
@@ -82,7 +85,6 @@ const  VideoComponent = (props) => {
         },
       })
       .then(response => {
-        console.log(response.data)
         if(response.data?.status == 1){
           const tempFiles= props.selectedTask.files ? [...props.selectedTask.files] : [];
           tempFiles.push(response.data.message[0].pathName)
@@ -94,6 +96,7 @@ const  VideoComponent = (props) => {
         }else{
           props.dialog.setDialogText("Birşeyler ters gitti!");
           props.dialog.setDialogShow(true);
+          console.log("1")
         }
         
       })
@@ -101,6 +104,7 @@ const  VideoComponent = (props) => {
         props.dialog.setDialogText("Birşeyler ters gitti!");
         console.log(error)
         props.dialog.setDialogShow(true);
+        console.log("2")
       }).finally(()=> {setMaskLoading(false);});
     });
   }
@@ -211,7 +215,8 @@ const styles = StyleSheet.create({
     width:'100%',
     height:'100%',
     position:"absolute",
-    zIndex:2,
+    zIndex:99999,
+    elevation:1,
     backgroundColor:'#000000aa',
     alignItems: 'center',
     justifyContent: 'center'
