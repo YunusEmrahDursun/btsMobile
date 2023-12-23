@@ -17,7 +17,16 @@ const  TaskFinish = (props) => {
       getData();
   }, [tab])
 
+  useEffect(() => {
+    
+    const intervalId = setInterval(() => {
+      getData();
+    }, 30000); 
 
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
   
   const getData = () => { 
     setMaskLoading(true);

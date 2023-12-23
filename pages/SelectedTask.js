@@ -1,6 +1,6 @@
 import { StyleSheet, View,ScrollView,Text as Text2 } from 'react-native';
-import { useState } from 'react';
-import { Text,Icon,Button   } from '@rneui/themed';
+import { useState,useEffect } from 'react';
+import { Text,Icon,Button ,ListItem,Image   } from '@rneui/themed';
 import { useStoreContext } from '../Store';
 import Settings from '../Settings';
 import axios, * as others from 'axios';
@@ -12,7 +12,8 @@ const  SelectedTask = (props) => {
   const { state, dispatch } = useStoreContext();
   const [selectedTask, setSelectedTask] = useState(props.selectedTask);
   const [maskLoading, setMaskLoading] = useState(false);
-
+  const [selectedImage, setSelectedImage] = useState('');
+  const [tab, setTab] = useState(1);
   const callPhoneNumber = (phoneNumber) => {
     const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, ''); 
   
@@ -29,7 +30,7 @@ const  SelectedTask = (props) => {
   const back = () => { 
     props.setTab('taskList');
   }
-  
+
   const getColor = (status) => { 
 
     if( status == "open"){
@@ -46,7 +47,10 @@ const  SelectedTask = (props) => {
     
   }
 
-
+  const showImage = (image) => {
+    setTab(2);
+    setSelectedImage(image);
+  }
   // const transferTask = () => { 
   //   setMaskLoading(true);
   
@@ -65,6 +69,7 @@ const  SelectedTask = (props) => {
   //     console.log(error);
   //   }).finally(()=> {setMaskLoading(false);} )
   // }
+ 
   return (
     <View style={styles.full}>
       <View style={{...styles.mask,display: maskLoading ? '': 'none'}}>
@@ -72,7 +77,7 @@ const  SelectedTask = (props) => {
       </View>
       
       {
-         selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
+        tab == 1  && selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
             <View style={{ flex: 1}}>
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
@@ -120,7 +125,27 @@ const  SelectedTask = (props) => {
                   }
                   <Text style={styles.boldText}>Açıklama </Text><Text style={styles.detailText}>{selectedTask.is_emri_aciklama || ""}</Text>
                   <Text style={styles.boldText}>Adres </Text><Text style={styles.detailText}>{selectedTask.adres || ""}</Text>
-                  
+                  {
+                      selectedTask.dosyalar && selectedTask.dosyalar.split(",").map((item, i) => (
+                        <ListItem key={i} style={{marginLeft:10}}>
+                          <ListItem.Content >
+                            <ListItem.Title>
+                              <View style={{display:'flex',alignItems:'center',flexDirection:'row'}}>
+                                  <ListItem.Chevron style={{marginRight:10}}/>
+                                  <Text h4>{"Dosya "+(i+1)}  </Text>
+                                  <Button
+                                    style={{marginLeft:20}}
+                                    icon={<Icon name="eye" type="font-awesome" color="white"  />}
+                                    buttonStyle={{backgroundColor:'blue',borderRadius:20}}
+                                    onPress={()=>{showImage(item)}}
+                                  />
+                                </View>
+                                
+                            </ListItem.Title>
+                          </ListItem.Content>
+                        </ListItem>
+                      ))
+                    }
                 </View>
               </ScrollView>
             </View>
@@ -131,6 +156,8 @@ const  SelectedTask = (props) => {
                   icon={<Icon name="check" color="white"  />}
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
+                  title=" Tamamla"
+                  titleStyle={{fontSize:12}}
                   onPress={()=> { props.setTab('taskFinish') }}
                 />
                 <Button
@@ -138,6 +165,8 @@ const  SelectedTask = (props) => {
                   icon={<Icon name="arrow-forward" color="white"  />}
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
+                  title=" Yönlendir"
+                  titleStyle={{fontSize:12}}
                   onPress={()=> {props.setTab('fowardTaskRequest')} }
                 />
                 <Button
@@ -145,6 +174,8 @@ const  SelectedTask = (props) => {
                   icon={<Icon name="settings" color="white" />}
                   buttonStyle={styles.button}
                   containerStyle={styles.buttonContainer}
+                  title=" Harcama İzni"
+                  titleStyle={{fontSize:12}}
                   onPress={()=> { props.setTab('forwardSupport') }}
                 />
               </View>
@@ -158,6 +189,40 @@ const  SelectedTask = (props) => {
           
         </View>
       }
+      {
+        tab == 2 && selectedImage != '' && <View style={{ flex: 1, flexDirection: 'column'}}>
+          <View style={{ flex: 1}}>
+            <View style={styles.container}>
+              <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
+                <Text h5 >İş Emri Arıza Resmi</Text>
+                  <View  style={{maxWidth:150,backgroundColor:getColor(selectedTask.is_emri_durum_key),borderRadius:20,paddingLeft:10,paddingRight:10,paddingBottom:5,paddingTop:5}}>
+                  <Text2 ellipsizeMode='tail'  numberOfLines={1} style={{color:'#fff'}}>
+                    {selectedTask.is_emri_durum_adi}
+                  </Text2>
+                </View>
+              </View>
+              <View style={styles.divider} ></View>
+            </View>
+            <ScrollView>
+              <View style={{margin:20}}>
+                <Image
+                    source={{ uri: Settings.baseUrl.replace("/mobile/","") + "/firmaImages/"+selectedTask.firma_id+"/"+selectedImage }} 
+                    containerStyle={styles.item}
+                  />
+              </View>
+            </ScrollView>
+          </View>
+          <View style={{height:50, margin:20, display:'flex'}}>
+            
+            <View style={styles.backButton} >
+              <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> setTab(1)} />
+            </View>
+
+          </View>
+      
+        
+      </View>
+      }
 
       
     </View>
@@ -165,6 +230,11 @@ const  SelectedTask = (props) => {
 }
 
 const styles = StyleSheet.create({
+  item: {
+    aspectRatio: 1,
+    width: '100%',
+    flex: 1,
+  },  
   mask:{
     width:'100%',
     height:'100%',

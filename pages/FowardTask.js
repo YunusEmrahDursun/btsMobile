@@ -12,7 +12,8 @@ const  FowardTask = (props) => {
   const { state, dispatch } = useStoreContext();
   const [selectedTask, setSelectedTask] = useState(props.selectedTask);
   const [maskLoading, setMaskLoading] = useState(false);
-
+  const [selectedImage, setSelectedImage] = useState('');
+  const [tab, setTab] = useState(1);
 
 
   const convertDateFull = (_value) => {
@@ -65,7 +66,7 @@ const  FowardTask = (props) => {
       </View>
       
       {
-         selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
+         tab == 1 && selectedTask != null && <View style={{ flex: 1, flexDirection: 'column'}}>
             <View style={{ flex: 1}}>
               <View style={styles.container}>
                 <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
@@ -126,7 +127,40 @@ const  FowardTask = (props) => {
           
         </View>
       }
+      {
+        tab == 2 && selectedImage != '' && <View style={{ flex: 1, flexDirection: 'column'}}>
+          <View style={{ flex: 1}}>
+            <View style={styles.container}>
+              <View style={{display:'flex',width:'100%',justifyContent:'space-between',flexDirection:'row'}}>
+                <Text h5 >İş Emri Arıza Resmi</Text>
+                  <View  style={{maxWidth:150,backgroundColor:getColor(selectedTask.is_emri_durum_key),borderRadius:20,paddingLeft:10,paddingRight:10,paddingBottom:5,paddingTop:5}}>
+                  <Text2 ellipsizeMode='tail'  numberOfLines={1} style={{color:'#fff'}}>
+                    {selectedTask.is_emri_durum_adi}
+                  </Text2>
+                </View>
+              </View>
+              <View style={styles.divider} ></View>
+            </View>
+            <ScrollView>
+              <View style={{margin:20}}>
+                <Image
+                    source={{ uri: Settings.baseUrl.replace("/mobile/","") + "/firmaImages/"+selectedTask.firma_id+"/"+selectedImage }} 
+                    containerStyle={styles.item}
+                  />
+              </View>
+            </ScrollView>
+          </View>
+          <View style={{height:50, margin:20, display:'flex'}}>
+            
+            <View style={styles.backButton} >
+              <Button buttonStyle={{ borderWidth: 0, borderColor: 'transparent', borderRadius: 20 ,marginTop:10}}  icon={{ name: 'arrow-left', type: 'font-awesome', size: 15, color: 'white' }}  onPress={()=> setTab(1)} />
+            </View>
 
+          </View>
+      
+        
+      </View>
+      }
       
       
     </View>

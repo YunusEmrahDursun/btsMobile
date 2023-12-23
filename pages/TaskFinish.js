@@ -135,6 +135,8 @@ const  TaskFinish = (props) => {
                     icon={<Icon name="check" color="white"  />}
                     buttonStyle={styles.button}
                     containerStyle={styles.buttonContainer}
+                    title=" Tamamla"
+                    titleStyle={{fontSize:12}}
                     onPress={compeleteTask}
                   />
                 </View>

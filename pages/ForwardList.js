@@ -15,6 +15,16 @@ const  ForwardList = (props) => {
 
   const [maskLoading, setMaskLoading] = useState(false);
 
+  useEffect(() => {
+    
+    const intervalId = setInterval(() => {
+      getData();
+    }, 30000); 
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
   
   useEffect(() => {
       getData();

@@ -139,6 +139,8 @@ const  CreateTask = (props) => {
                       icon={<Icon type='font-awesome' name="building" color="white"  />}
                       buttonStyle={styles.button}
                       containerStyle={styles.buttonContainer}
+                      title=" Bina Ekle"
+                      titleStyle={{fontSize:12}}
                       onPress={()=>{setTab(4)}}
                     />
                   <Button disabled={form.files.length >= 3}  onPress={()=>{setTab(2)}} buttonStyle={styles.button}
@@ -151,6 +153,8 @@ const  CreateTask = (props) => {
                     icon={<Icon name="check" color="white" />}
                     buttonStyle={styles.button}
                     containerStyle={styles.buttonContainer}
+                    title=" Oluştur"
+                    titleStyle={{fontSize:12}}
                     onPress={createTask}
                   />
                   </View>
@@ -234,7 +238,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
-    maxWidth:'20%',
+    maxWidth:'25%',
     flex:1,
     marginLeft:5,
     marginRight:5

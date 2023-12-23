@@ -16,6 +16,16 @@ const  TaskList = (props) => {
   const [maskLoading, setMaskLoading] = useState(false);
 
 
+  useEffect(() => {
+    
+    const intervalId = setInterval(() => {
+      getData();
+    }, 30000); 
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
   
   useEffect(() => {
       getData();
@@ -140,6 +150,8 @@ const  TaskList = (props) => {
             <Button
               icon={<Icon name="add" color="white"  />}
               onPress={()=> {props.setTab('createTask');}}
+              title=" İş Oluştur"
+              titleStyle={{fontSize:12}}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
             />
@@ -148,6 +160,8 @@ const  TaskList = (props) => {
               icon={<Icon name="arrow-forward" color="white"  />}
               onPress={()=> {props.setTab('forwardList');}}
               buttonStyle={styles.button}
+              title=" Yönlendirmeler"
+              titleStyle={{fontSize:12}}
               containerStyle={styles.buttonContainer}
             />
 
@@ -156,6 +170,8 @@ const  TaskList = (props) => {
               icon={<Icon name="power-off" color="white" />}
               buttonStyle={styles.button}
               containerStyle={styles.buttonContainer}
+              title=" Çıkış"
+              titleStyle={{fontSize:12}}
               onPress={exit}
             />
           </View>
