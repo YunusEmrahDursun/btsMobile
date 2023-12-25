@@ -38,6 +38,9 @@ const  TaskList = (props) => {
       setData(response.data)
     })
     .catch( (error) => {
+      if(error.toJSON().status == 403){
+        exit();
+      }
       console.log(error);
     }).finally(()=> setTaskLoading(false) )
 
