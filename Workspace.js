@@ -11,7 +11,8 @@ import * as Notifications from 'expo-notifications';
 import { Camera } from 'expo-camera';
 import * as Device from "expo-device";
 import * as Location from 'expo-location';
-
+import { Text } from '@rneui/themed';
+import Constants from 'expo-constants';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
       shouldShowAlert: true,
@@ -25,7 +26,6 @@ const  Workspace = () => {
   
   const notificationListener = useRef();
   const responseListener = useRef();
-
   async function registerForPushNotificationsAsync() {
     let token;
   
@@ -45,8 +45,9 @@ const  Workspace = () => {
             return;
         }
   
-        token = (await Notifications.getExpoPushTokenAsync()).data;
-  
+        token = (await Notifications.getExpoPushTokenAsync({
+          projectId: Constants.expoConfig.extra.eas.projectId
+        })).data;
     } else {
         alert("Must use physical device for Push Notifications");
     }
@@ -81,6 +82,7 @@ const  Workspace = () => {
             },
         } = response;
 
+
         if (screen) {
             props.navigation.navigate(screen);
         }
@@ -113,7 +115,8 @@ const  Workspace = () => {
 
     if(state.userToken && state.pushToken){
       axios.post( Settings.baseUrl + '/setPushToken' ,{ pushToken:state.pushToken },{ headers: { 'authorization': state.userToken } })
-      .then( (response) =>  {  })
+      .then( (response) =>  { 
+       })
       .catch( (error) => {
         console.log(error);
       })

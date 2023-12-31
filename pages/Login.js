@@ -49,6 +49,9 @@ const  Login = () => {
           setDialogShow(true);
         }
 
+      }else if(response.data?.status == 0 && response.data?.message  ){
+        setDialogText(response.data?.message);
+        setDialogShow(true);
       }
       
     })

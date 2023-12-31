@@ -77,7 +77,7 @@ const  TaskFinish = (props) => {
 
   }
  
-  
+
   return (
     <>
     { tab == 1 && <View style={styles.full}>

@@ -37,11 +37,20 @@ const  Qr = (props) => {
 
 const compeleteTask = () => { 
 
-    setMaskLoading(true);
   
-    axios.post( Settings.baseUrl + '/temizlikTamamla/',props.data,{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
+    if(props.selectedTask.files.length == 0 && props.data.durum == 'cikis'){
+        props.dialog.setDialogText("Lütfen Fotoğraf Ekleyin!");
+        props.dialog.setDialogShow(true);
+        return;
+    }
+    setMaskLoading(true);
+
+    axios.post( Settings.baseUrl + ( props.data.durum == 'giris' ? '/temizlikGiris/' : '/temizlikTamamla'),{...props.data,files:props.selectedTask.files},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
       if(response.data?.status == 1){
-        props.dialog.setDialogText("İşlem Tamamlandı!");
+        props.dialog.setDialogText(props.data.durum == 'giris' ? "Giriş Yapıldı!" : "Çıkış Yapıldı");
+        if(props.data.durum == 'cikis'){
+          props.setSelectedTask({files:[]})
+        }
         props.dialog.setDialogShow(true);
         props.setTab(1);
       }
