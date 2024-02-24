@@ -33,25 +33,29 @@ const  ForwardSupport = (props) => {
     setFormSupport(tempData);
   }
   const supportTask = () => { 
+    try {
+      setMaskLoading(true);
 
+      axios.post( Settings.baseUrl + '/servisIstegiTalebi/'+selectedTask.is_emri_id,formSupport,{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
+        if(response.data?.status == 1){
+          props.dialog.setDialogText("Harcama Talebi iletildi!");
+          props.dialog.setDialogShow(true);
+          back();
+        }
+        if(response.data?.message){
+          props.dialog.setDialogText(response.data.message);
+          props.dialog.setDialogShow(true);
+        }
+      })
+      .catch( (error) => {
+        props.dialog.setDialogText("Birşeyler ters gitti!");
+        console.log(error);
+      }).finally(()=> {setMaskLoading(false);} )
+    } catch (error) {
+      
+    }
 
-    setMaskLoading(true);
-
-    axios.post( Settings.baseUrl + '/servisIstegiTalebi/'+selectedTask.is_emri_id,formSupport,{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
-      if(response.data?.status == 1){
-        props.dialog.setDialogText("Harcama Talebi iletildi!");
-        props.dialog.setDialogShow(true);
-        back();
-      }
-      if(response.data?.message){
-        props.dialog.setDialogText(response.data.message);
-        props.dialog.setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      props.dialog.setDialogText("Birşeyler ters gitti!");
-      console.log(error);
-    }).finally(()=> {setMaskLoading(false);} )
+    
   }
   const formSupportChange = (_name,_value,_index) => { 
     const tempData=[...formSupport]

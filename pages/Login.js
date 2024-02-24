@@ -26,38 +26,42 @@ const  Login = () => {
   })
 
   const loginClick = () => { 
+    try {
+      const tempError = {
 
-    const tempError = {
-
-      kullanici_adi:form.kullanici_adi.length == 0,
-      kullanici_parola:form.kullanici_parola.length == 0,
-
-    }
-
-    setFormError({...formError, ...tempError});
-    if( Object.keys(tempError).some(key => tempError[key] ) ) return;
-
-    setLoginLoading(true);
-    axios.post( Settings.baseUrl + '/login',form) .then( (response) =>  {
-      if(response.data?.status == 1 && response.data?.token){
-        const yetki = response.data.auth
-        if(["temizlik","teknik"].includes(yetki)){
-          dispatch({ type: 'changeToken', payload: response.data.token });
-          dispatch({ type: 'changeType', payload: yetki });
-        }else{
-          setDialogText("Bu yetkiye sahip kullanıcı mobil girişi yapamaz!");
+        kullanici_adi:form.kullanici_adi.length == 0,
+        kullanici_parola:form.kullanici_parola.length == 0,
+  
+      }
+  
+      setFormError({...formError, ...tempError});
+      if( Object.keys(tempError).some(key => tempError[key] ) ) return;
+  
+      setLoginLoading(true);
+      axios.post( Settings.baseUrl + '/login',form) .then( (response) =>  {
+        if(response.data?.status == 1 && response.data?.token){
+          const yetki = response.data.auth
+          if(["temizlik","teknik"].includes(yetki)){
+            dispatch({ type: 'changeToken', payload: response.data.token });
+            dispatch({ type: 'changeType', payload: yetki });
+          }else{
+            setDialogText("Bu yetkiye sahip kullanıcı mobil girişi yapamaz!");
+            setDialogShow(true);
+          }
+  
+        }else if(response.data?.status == 0 && response.data?.message  ){
+          setDialogText(response.data?.message);
           setDialogShow(true);
         }
-
-      }else if(response.data?.status == 0 && response.data?.message  ){
-        setDialogText(response.data?.message);
-        setDialogShow(true);
-      }
+        
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> setLoginLoading(false) )
+    } catch (error) {
       
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> setLoginLoading(false) )
+    }
+    
 
   }
   const registerClick = () => { 

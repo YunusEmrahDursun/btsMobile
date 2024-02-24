@@ -40,23 +40,28 @@ const  FowardTask = (props) => {
     
   }
   const sendFowardTask = (status) => { 
-    setMaskLoading(true);
+    try {
+      setMaskLoading(true);
   
-    axios.post( Settings.baseUrl + '/yonlendirmeTalepCevap/'+selectedTask.is_emri_id,{status:status},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
-      if(response.data?.status == 1){
-        props.dialog.setDialogText("Transfer isteği cevabı iletildi!");
-        props.dialog.setDialogShow(true);
-        props.setTab('forwardList');
-       
-      }
-      if(response.data?.message){
-        props.dialog.setDialogText(response.data.message);
-        props.dialog.setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> {setMaskLoading(false);} )
+      axios.post( Settings.baseUrl + '/yonlendirmeTalepCevap/'+selectedTask.is_emri_id,{status:status},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
+        if(response.data?.status == 1){
+          props.dialog.setDialogText("Transfer isteği cevabı iletildi!");
+          props.dialog.setDialogShow(true);
+          props.setTab('forwardList');
+        
+        }
+        if(response.data?.message){
+          props.dialog.setDialogText(response.data.message);
+          props.dialog.setDialogShow(true);
+        }
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> {setMaskLoading(false);} )
+    } catch (error) {
+      
+    }
+    
   }
   
   return (

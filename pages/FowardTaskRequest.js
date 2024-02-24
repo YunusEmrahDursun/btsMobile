@@ -16,7 +16,8 @@ const  FowardTaskRequest = (props) => {
   const [maskLoading, setMaskLoading] = useState(false);
   const [yonlendirilen, setYonlendirilen] = useState(null);
   const [userList, setUserList] = useState([])
- 
+  const [search, setSearch] = useState("");
+  const [showUserList, setShowUserList] = useState([])
 
   const back = () => { 
     props.setTab('selectedTask');
@@ -38,40 +39,63 @@ const  FowardTaskRequest = (props) => {
     
   }
  
-  const transferTask = () => { 
-    if(!yonlendirilen){
-      props.dialog.setDialogText("Lütfen bir kullanıcı seçiniz");
-      props.dialog.setDialogShow(true);
-      return;
+  useEffect(() => {
+    try {
+      if(search != ""){
+        setShowUserList(userList.filter(i=> i.label.includes(search)))
+      }else{
+        setShowUserList(userList)
+      }
+    } catch (error) {
+      
     }
-    setMaskLoading(true);
-  
-    axios.post( Settings.baseUrl + '/isEmiriYonlendir/'+selectedTask.is_emri_id,{yonlendirilen_kullanici_id:yonlendirilen},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
-      if(response.data?.status == 1){
-        props.dialog.setDialogText("Kullanıcıya transfer isteği gönderildi!");
+    
+  }, [userList,search])
+
+  const transferTask = () => { 
+    try {
+      if(!yonlendirilen){
+        props.dialog.setDialogText("Lütfen bir kullanıcı seçiniz");
         props.dialog.setDialogShow(true);
-        back();
+        return;
       }
-      if(response.data?.message){
-        props.dialog.setDialogText(response.data.message);
-        props.dialog.setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> {setMaskLoading(false);} )
+      setMaskLoading(true);
+    
+      axios.post( Settings.baseUrl + '/isEmiriYonlendir/'+selectedTask.is_emri_id,{yonlendirilen_kullanici_id:yonlendirilen},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
+        if(response.data?.status == 1){
+          props.dialog.setDialogText("Kullanıcıya transfer isteği gönderildi!");
+          props.dialog.setDialogShow(true);
+          back();
+        }
+        if(response.data?.message){
+          props.dialog.setDialogText(response.data.message);
+          props.dialog.setDialogShow(true);
+        }
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> {setMaskLoading(false);} )
+    } catch (error) {
+      
+    }
+    
   }
 
   useEffect(() => {
-    axios.get( Settings.baseUrl + '/subeTeknikPersonelleri/' ,{ headers: { 'authorization': state.userToken } }
-    ).then( (response) =>  {
-      const temp=response.data.map(i=> { return { value:i.kullanici_id,label: i.kullanici_isim + ' ' + i.kullanici_soyisim }})
-
-      setUserList(temp)
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> {} )
+    try {
+      axios.get( Settings.baseUrl + '/subeTeknikPersonelleri/' ,{ headers: { 'authorization': state.userToken } }
+      ).then( (response) =>  {
+        const temp=response.data.map(i=> { return { value:i.kullanici_id,label: i.kullanici_isim + ' ' + i.kullanici_soyisim }})
+  
+        setUserList(temp)
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> {} )
+    } catch (error) {
+      
+    }
+  
 
   }, [])
   
@@ -98,6 +122,7 @@ const  FowardTaskRequest = (props) => {
               <ScrollView>
                 <View style={{margin:20}}>
                   <Text style={styles.detailText}>{`Yönlendirilecek kullanıcıyı seçiniz:`}</Text>
+                  <Input value={search} onChangeText={setSearch} leftIcon={{ type: 'font-awesome', name: 'search' }} placeholder='Kullanıcı Filtrele'  />
                   <Picker
                       selectedValue={yonlendirilen}
                       onValueChange={(itemValue, itemIndex) =>
@@ -105,7 +130,7 @@ const  FowardTaskRequest = (props) => {
                       }>
                           <Picker.Item key={0} label={"Seçiniz"} value={null} />
                       {
-                        userList.map(user=> <Picker.Item key={user.value} label={user.label} value={user.value} />)
+                        showUserList.map(user=> <Picker.Item key={user.value} label={user.label} value={user.value} />)
                       }  
                       
                     </Picker>

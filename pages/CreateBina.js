@@ -21,24 +21,28 @@ const  CreateBina = (props) => {
   
  
   const createBina = () => { 
-   
-    setMaskLoading(true);
+    try {
+      setMaskLoading(true);
 
-    axios.post( Settings.baseUrl + '/binaOlustur/',{bina_adi:form.binaAdi,adres:form.adres},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
-      if(response.data?.status == 1){
-        props.dialog.setDialogText("Bina Oluşturuldu");
-        props.dialog.setDialogShow(true);
-        props.setTab(1);
-       
-      }
-      if(response.data?.message){
-        props.dialog.setDialogText(response.data.message);
-        props.dialog.setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> {setMaskLoading(false);} )
+      axios.post( Settings.baseUrl + '/binaOlustur/',{bina_adi:form.binaAdi,adres:form.adres},{ headers: { 'authorization': state.userToken } }) .then( (response) =>  {
+        if(response.data?.status == 1){
+          props.dialog.setDialogText("Bina Oluşturuldu");
+          props.dialog.setDialogShow(true);
+          props.setTab(1);
+        
+        }
+        if(response.data?.message){
+          props.dialog.setDialogText(response.data.message);
+          props.dialog.setDialogShow(true);
+        }
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> {setMaskLoading(false);} )
+    } catch (error) {
+      
+    }
+    
   }
   const formChange = (_name,_value) => { 
     

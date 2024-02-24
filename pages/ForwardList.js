@@ -31,14 +31,19 @@ const  ForwardList = (props) => {
   }, [ state.refreshData])
   
   const getData = () => { 
-    setTaskLoading(true);
-    axios.get( Settings.baseUrl + '/yonlendirmeTalepleri/' ,{ headers: { 'authorization': state.userToken } }
-    ).then( (response) =>  {
-      setData(response.data)
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> setTaskLoading(false) )
+    try {
+      setTaskLoading(true);
+      axios.get( Settings.baseUrl + '/yonlendirmeTalepleri/' ,{ headers: { 'authorization': state.userToken } }
+      ).then( (response) =>  {
+        setData(response.data)
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> setTaskLoading(false) )
+    } catch (error) {
+      
+    }
+  
 
   }
 

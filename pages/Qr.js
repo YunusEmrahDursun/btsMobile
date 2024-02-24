@@ -19,26 +19,35 @@ const  Qr = (props) => {
   
   useEffect(() => {
     (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+        try {
+          const { status } = await BarCodeScanner.requestPermissionsAsync();
+          setHasPermission(status === 'granted');
+        } catch (error) {
+          
+        }
+      
     })();
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true);
-    if(props.data.qr == data){
-      compeleteTask();
+    try {
+      setScanned(true);
+      if(props.data.qr == data){
+        compeleteTask();
+      }
+      else{
+        props.dialog.setDialogText("QR bina ile eşleşmedi!");
+        props.dialog.setDialogShow(true);
+      }
+    } catch (error) {
+      
     }
-    else{
-      props.dialog.setDialogText("QR bina ile eşleşmedi!");
-      props.dialog.setDialogShow(true);
-    }
+   
   };
 
 const compeleteTask = () => { 
-
-  
-    if(props.selectedTask.files.length == 0 && props.data.durum == 'cikis'){
+    try {
+      if(props.selectedTask.files.length == 0 && props.data.durum == 'cikis'){
         props.dialog.setDialogText("Lütfen Fotoğraf Ekleyin!");
         props.dialog.setDialogShow(true);
         return;
@@ -64,6 +73,11 @@ const compeleteTask = () => {
       props.dialog.setDialogShow(true);
       console.log(error);
     }).finally(()=> {setMaskLoading(false);} )
+    } catch (error) {
+      
+    }
+  
+    
   }
   
   return (

@@ -26,11 +26,16 @@ const  VideoComponent = (props) => {
  
   useEffect(() => {
     (async () => {
-      const cameraPerm = await Camera.requestCameraPermissionsAsync();
+      try {
+        const cameraPerm = await Camera.requestCameraPermissionsAsync();
 
-      const AudioPerm = await Audio.requestPermissionsAsync();
-      
-      setHasPermission( AudioPerm.status === 'granted' && cameraPerm.status === 'granted' );
+        const AudioPerm = await Audio.requestPermissionsAsync();
+        
+        setHasPermission( AudioPerm.status === 'granted' && cameraPerm.status === 'granted' );
+      } catch (error) {
+        
+      }
+     
 
     })();
   }, []);
@@ -38,19 +43,24 @@ const  VideoComponent = (props) => {
   
   
   const startRecording = async () => {
-    if (cameraRef) {
-      try {
-        setIsRecording(true);
-        const videoRecordPromise = cameraRef.recordAsync();
-        if (videoRecordPromise) {
-          const data = await videoRecordPromise;
-          setVideoUri(data.uri);
-          setMaskLoading(false);
+    try {
+      if (cameraRef) {
+        try {
+          setIsRecording(true);
+          const videoRecordPromise = cameraRef.recordAsync();
+          if (videoRecordPromise) {
+            const data = await videoRecordPromise;
+            setVideoUri(data.uri);
+            setMaskLoading(false);
+          }
+        } catch (error) {
+          console.error('Video recording error:', error);
         }
-      } catch (error) {
-        console.error('Video recording error:', error);
       }
+    } catch (error) {
+      
     }
+  
   };
 
   const stopRecording = () => {
@@ -60,53 +70,63 @@ const  VideoComponent = (props) => {
     }
   };
   const createFormData = async (photoUri) => {
-    const filePath = Platform.OS === 'android' ? `file://${photoUri}` : photoUri;
-    const fileName = filePath.split('/').pop();
-    const formData = new FormData();
-    formData.append('file', {
-      uri: filePath,
-      type: 'video/mp4', 
-      name: fileName,
-    });
-  
-    return formData;
+    try {
+      const filePath = Platform.OS === 'android' ? `file://${photoUri}` : photoUri;
+      const fileName = filePath.split('/').pop();
+      const formData = new FormData();
+      formData.append('file', {
+        uri: filePath,
+        type: 'video/mp4', 
+        name: fileName,
+      });
+    
+      return formData;
+    } catch (error) {
+      
+    }
+    
   };
   const saveVideo = async () => { 
-    setMaskLoading(true);
+    try {
+      setMaskLoading(true);
     
-    const compressedVideoUri = await compressVideo(videoUri);
+      const compressedVideoUri = await compressVideo(videoUri);
 
-    createFormData(compressedVideoUri)
-    .then((formData) => {
-      axios.post(Settings.baseUrl + '/fileUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'authorization': state.userToken,
-        },
-      })
-      .then(response => {
-        if(response.data?.status == 1){
-          const tempFiles= props.selectedTask.files ? [...props.selectedTask.files] : [];
-          tempFiles.push(response.data.message[0].pathName)
-          props.setSelectedTask({...props.selectedTask, files:tempFiles})
-          setVideoUri(null);
-          props.dialog.setDialogText("Bir Adet Video Yüklendi!");
-          props.dialog.setDialogShow(true);
-          props.setTab(1);
-        }else{
+      createFormData(compressedVideoUri)
+      .then((formData) => {
+        axios.post(Settings.baseUrl + '/fileUpload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'authorization': state.userToken,
+          },
+        })
+        .then(response => {
+          if(response.data?.status == 1){
+            const tempFiles= props.selectedTask.files ? [...props.selectedTask.files] : [];
+            tempFiles.push(response.data.message[0].pathName)
+            props.setSelectedTask({...props.selectedTask, files:tempFiles})
+            setVideoUri(null);
+            props.dialog.setDialogText("Bir Adet Video Yüklendi!");
+            props.dialog.setDialogShow(true);
+            props.setTab(1);
+          }else{
+            props.dialog.setDialogText("Birşeyler ters gitti!");
+            props.dialog.setDialogShow(true);
+            console.log("1")
+          }
+          
+        })
+        .catch(error => {
           props.dialog.setDialogText("Birşeyler ters gitti!");
+          console.log(error)
           props.dialog.setDialogShow(true);
-          console.log("1")
-        }
-        
-      })
-      .catch(error => {
-        props.dialog.setDialogText("Birşeyler ters gitti!");
-        console.log(error)
-        props.dialog.setDialogShow(true);
-        console.log("2")
-      }).finally(()=> {setMaskLoading(false);});
-    });
+          console.log("2")
+        }).finally(()=> {setMaskLoading(false);});
+      });
+    } catch (error) {
+      
+    }
+    
   }
   const takeVideoAgain = () => { 
     setVideoUri(null)

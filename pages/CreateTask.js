@@ -17,6 +17,8 @@ const  CreateTask = (props) => {
   const [binaList, setBinaList] = useState([])
   const [bina, setBina] = useState(null);
   const [tab, setTab] = useState(1)  
+  const [search, setSearch] = useState("");
+  const [showBinaList, setShowBinaList] = useState([])
 
   const [form, setForm] = useState({
     aciklama:"",
@@ -27,44 +29,68 @@ const  CreateTask = (props) => {
   }
   
   useEffect(() => {
-    if(tab == 1){
-      axios.get( Settings.baseUrl + '/subeBinalari/' ,{ headers: { 'authorization': state.userToken } }
-      ).then( (response) =>  {
-        const temp=response.data.map(i=> { return { value:i.bina_id,label: i.bina_adi }})
-  
-        setBinaList(temp)
-      })
-      .catch( (error) => {
-        console.log(error);
-      }).finally(()=> {} )
+    try {
+      if(search != ""){
+        setShowBinaList(binaList.filter(i=> i.label.includes(search)))
+      }else{
+        setShowBinaList(binaList)
+      }
+    } catch (error) {
+      
     }
+   
+  }, [binaList,search])
+  
+
+  useEffect(() => {
+    try {
+      if(tab == 1){
+        axios.get( Settings.baseUrl + '/subeBinalari/' ,{ headers: { 'authorization': state.userToken } }
+        ).then( (response) =>  {
+          const temp=response.data.map(i=> { return { value:i.bina_id,label: i.bina_adi }})
+    
+          setBinaList(temp)
+        })
+        .catch( (error) => {
+          console.log(error);
+        }).finally(()=> {} )
+      }
+    } catch (error) {
+      
+    }
+   
   
 
   }, [tab])
  
   const createTask = () => { 
-    if(!bina){
-      props.dialog.setDialogText("Lütfen bir bina seçiniz");
-      props.dialog.setDialogShow(true);
-      return;
+    try {
+      if(!bina){
+        props.dialog.setDialogText("Lütfen bir bina seçiniz");
+        props.dialog.setDialogShow(true);
+        return;
+      }
+      setMaskLoading(true);
+  
+      axios.post( Settings.baseUrl + '/taskOlustur/',{bina_id:bina,is_emri_aciklama:form.aciklama,files:form.files},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
+        if(response.data?.status == 1){
+          props.dialog.setDialogText("İş Oluşturuldu");
+          props.dialog.setDialogShow(true);
+          props.setTab('taskList');
+         
+        }
+        if(response.data?.message){
+          props.dialog.setDialogText(response.data.message);
+          props.dialog.setDialogShow(true);
+        }
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> {setMaskLoading(false);} )
+    } catch (error) {
+      
     }
-    setMaskLoading(true);
-
-    axios.post( Settings.baseUrl + '/taskOlustur/',{bina_id:bina,is_emri_aciklama:form.aciklama,files:form.files},{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
-      if(response.data?.status == 1){
-        props.dialog.setDialogText("İş Oluşturuldu");
-        props.dialog.setDialogShow(true);
-        props.setTab('taskList');
-       
-      }
-      if(response.data?.message){
-        props.dialog.setDialogText(response.data.message);
-        props.dialog.setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> {setMaskLoading(false);} )
+    
   }
   const formChange = (_name,_value) => { 
     
@@ -97,6 +123,7 @@ const  CreateTask = (props) => {
                   <View style={{margin:20}}>
                     <Input value={form.aciklama} onChangeText={(e)=> formChange  ("aciklama",e)} leftIcon={{ type: 'font-awesome', name: 'edit' }} placeholder='Açıklama'  />
                     <Text style={styles.detailText}>{`Bina seçiniz:`}</Text>
+                    <Input value={search} onChangeText={setSearch} leftIcon={{ type: 'font-awesome', name: 'search' }} placeholder='Bina Filtrele'  />
                     <Picker
                         selectedValue={bina}
                         onValueChange={(itemValue, itemIndex) =>
@@ -104,7 +131,7 @@ const  CreateTask = (props) => {
                         }>
                             <Picker.Item key={0} label={"Seçiniz"} value={null} />
                         {
-                          binaList.map(item=> <Picker.Item key={item.value} label={item.label} value={item.value} />)
+                          showBinaList.map(item=> <Picker.Item key={item.value} label={item.label} value={item.value} />)
                         }  
                         
                       </Picker>

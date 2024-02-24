@@ -32,17 +32,22 @@ const  TaskList = (props) => {
   }, [ state.refreshData])
   
   const getData = () => { 
-    setTaskLoading(true);
-    axios.get( Settings.baseUrl + '/isEmirleri/' ,{ headers: { 'authorization': state.userToken } }
-    ).then( (response) =>  {
-      setData(response.data)
-    })
-    .catch( (error) => {
-      if(error.toJSON().status == 403){
-        exit();
-      }
-      console.log(error);
-    }).finally(()=> setTaskLoading(false) )
+    try {
+      setTaskLoading(true);
+      axios.get( Settings.baseUrl + '/isEmirleri/' ,{ headers: { 'authorization': state.userToken } }
+      ).then( (response) =>  {
+        setData(response.data)
+      })
+      .catch( (error) => {
+        if(error.toJSON().status == 403){
+          exit();
+        }
+        console.log(error);
+      }).finally(()=> setTaskLoading(false) )
+    } catch (error) {
+      
+    }
+    
 
   }
 

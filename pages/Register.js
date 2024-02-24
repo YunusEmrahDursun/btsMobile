@@ -38,56 +38,66 @@ const  Register = () => {
   const [dialogShow, setDialogShow] = useState(false);
 
   const registerLinkClick = () => { 
-    if(form.link.length == 0 ) {
-       setFormError({...formError, link: true}) 
-      return;
+    try {
+      if(form.link.length == 0 ) {
+        setFormError({...formError, link: true}) 
+       return;
+     }
+     setRegisterLoading(true);
+     axios.get( Settings.baseUrl + '/checkJoinLink/' + form.link) .then( (response) =>  {
+       if(response.data?.status == 1){
+         setTab(2);
+       }
+       if(response.data?.message){
+         setDialogText(response.data.message);
+         setDialogShow(true);
+       }
+     })
+     .catch( (error) => {
+       console.log(error);
+     }).finally(()=> setRegisterLoading(false) )
+    } catch (error) {
+      
     }
-    setRegisterLoading(true);
-    axios.get( Settings.baseUrl + '/checkJoinLink/' + form.link) .then( (response) =>  {
-      if(response.data?.status == 1){
-        setTab(2);
-      }
-      if(response.data?.message){
-        setDialogText(response.data.message);
-        setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> setRegisterLoading(false) )
+    
   
   }
 
   const registerUserClick = () => { 
-    
-    const tempError = {
+    try {
+      const tempError = {
 
-      kullanici_isim: form.kullanici_isim.length == 0,
-      kullanici_soyisim:form.kullanici_soyisim.length == 0,
-      kullanici_telefon:form.kullanici_telefon.length == 0,
-      kullanici_adi:form.kullanici_adi.length == 0,
-      kullanici_parola:form.kullanici_parola.length == 0,
-      kullanici_parola_tekrar:form.kullanici_parola_tekrar.length == 0,
-      kullanici_parola_tekrar_match: form.kullanici_parola != form.kullanici_parola_tekrar
-
+        kullanici_isim: form.kullanici_isim.length == 0,
+        kullanici_soyisim:form.kullanici_soyisim.length == 0,
+        kullanici_telefon:form.kullanici_telefon.length == 0,
+        kullanici_adi:form.kullanici_adi.length == 0,
+        kullanici_parola:form.kullanici_parola.length == 0,
+        kullanici_parola_tekrar:form.kullanici_parola_tekrar.length == 0,
+        kullanici_parola_tekrar_match: form.kullanici_parola != form.kullanici_parola_tekrar
+  
+      }
+      setFormError({...formError, ...tempError});
+      if( Object.keys(tempError).some(key => tempError[key] ) ) return;
+      
+      
+      setRegisterLoading(true);
+      axios.post( Settings.baseUrl + '/register',form) .then( (response) =>  {
+        if(response.data?.status == 1 && response.data?.token){
+          dispatch({ type: 'changeToken', payload: response.data.token });
+        }
+        if(response.data?.message){
+          setDialogText(response.data.message);
+          setDialogShow(true);
+        }
+      })
+      .catch( (error) => {
+        console.log(error);
+      }).finally(()=> setRegisterLoading(false) )
+    } catch (error) {
+      
     }
-    setFormError({...formError, ...tempError});
-    if( Object.keys(tempError).some(key => tempError[key] ) ) return;
     
     
-    setRegisterLoading(true);
-    axios.post( Settings.baseUrl + '/register',form) .then( (response) =>  {
-      if(response.data?.status == 1 && response.data?.token){
-        dispatch({ type: 'changeToken', payload: response.data.token });
-      }
-      if(response.data?.message){
-        setDialogText(response.data.message);
-        setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      console.log(error);
-    }).finally(()=> setRegisterLoading(false) )
   
   }
 

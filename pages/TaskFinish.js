@@ -33,33 +33,38 @@ const  TaskFinish = (props) => {
   }
   
   const compeleteTask = () => { 
-    const tempError = {
+    try {
+      const tempError = {
 
-      aciklama:form.aciklama.length == 0,
-
-    }
-
-    setFormCompleteError({...formCompleteError, ...tempError});
-    if( Object.keys(tempError).some(key => tempError[key] ) ) return;
-
-    setMaskLoading(true);
+        aciklama:form.aciklama.length == 0,
   
-    axios.post( Settings.baseUrl + '/isEmiriTamamla/'+selectedTask.is_emri_id,form,{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
-      if(response.data?.status == 1){
-        props.dialog.setDialogText("İşlem Tamamlandı!");
-        props.dialog.setDialogShow(true);
-        back();
       }
-      if(response.data?.message){
-        props.dialog.setDialogText(response.data.message);
+  
+      setFormCompleteError({...formCompleteError, ...tempError});
+      if( Object.keys(tempError).some(key => tempError[key] ) ) return;
+  
+      setMaskLoading(true);
+    
+      axios.post( Settings.baseUrl + '/isEmiriTamamla/'+selectedTask.is_emri_id,form,{ headers: { 'authorization': state.userToken,location:state.location } }) .then( (response) =>  {
+        if(response.data?.status == 1){
+          props.dialog.setDialogText("İşlem Tamamlandı!");
+          props.dialog.setDialogShow(true);
+          back();
+        }
+        if(response.data?.message){
+          props.dialog.setDialogText(response.data.message);
+          props.dialog.setDialogShow(true);
+        }
+      })
+      .catch( (error) => {
+        props.dialog.setDialogText("Birşeyler ters gitti!");
         props.dialog.setDialogShow(true);
-      }
-    })
-    .catch( (error) => {
-      props.dialog.setDialogText("Birşeyler ters gitti!");
-      props.dialog.setDialogShow(true);
-      console.log(error);
-    }).finally(()=> {setMaskLoading(false);} )
+        console.log(error);
+      }).finally(()=> {setMaskLoading(false);} )
+    } catch (error) {
+      
+    }
+    
   }
  
   const formCompleteChange = (_name,_value) => { 

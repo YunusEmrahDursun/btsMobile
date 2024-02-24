@@ -39,56 +39,66 @@ const  Picture = (props) => {
     }
   }
   const createFormData = async (photoUri, compressionQuality) => {
-    const filePath = Platform.OS === 'android' ? `file://${photoUri}` : photoUri;
-    const fileName = filePath.split('/').pop();
-  
-    const compressedImage = await manipulateAsync(
-      filePath,
-      [{ resize: { width: 300, height: 300 } }],
-      { compress: 1, format: SaveFormat.JPEG }
-    );
-    const formData = new FormData();
-    formData.append('file', {
-      uri: compressedImage.uri,
-      type: 'image/jpeg',
-      name: fileName,
-    });
-  
-    return formData;
+    try {
+      const filePath = Platform.OS === 'android' ? `file://${photoUri}` : photoUri;
+      const fileName = filePath.split('/').pop();
+    
+      const compressedImage = await manipulateAsync(
+        filePath,
+        [{ resize: { width: 300, height: 300 } }],
+        { compress: 1, format: SaveFormat.JPEG }
+      );
+      const formData = new FormData();
+      formData.append('file', {
+        uri: compressedImage.uri,
+        type: 'image/jpeg',
+        name: fileName,
+      });
+    
+      return formData;
+    } catch (error) {
+      
+    }
+   
   };
 
   const  savePhoto = () => { 
-    setMaskLoading(true);
-    createFormData(photoUri)
-    .then((formData) => {
-      axios.post(Settings.baseUrl + '/fileUpload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'authorization': state.userToken,
-        },
-      })
-      .then(response => {
-        
-        if(response.data?.status == 1 ){
-          const tempFiles= props.selectedTask.files ? [...props.selectedTask.files] : [];
-          tempFiles.push(response.data.message[0].pathName)
-          props.setSelectedTask({...props.selectedTask, files:tempFiles})
-          setPhotoUri(null);
-          props.dialog.setDialogText("Bir Adet Fotoğraf Yüklendi!");
-          props.dialog.setDialogShow(true);
-          props.setTab(1);
-        }else{
+    try {
+      setMaskLoading(true);
+      createFormData(photoUri)
+      .then((formData) => {
+        axios.post(Settings.baseUrl + '/fileUpload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'authorization': state.userToken,
+          },
+        })
+        .then(response => {
+          
+          if(response.data?.status == 1 ){
+            const tempFiles= props.selectedTask.files ? [...props.selectedTask.files] : [];
+            tempFiles.push(response.data.message[0].pathName)
+            props.setSelectedTask({...props.selectedTask, files:tempFiles})
+            setPhotoUri(null);
+            props.dialog.setDialogText("Bir Adet Fotoğraf Yüklendi!");
+            props.dialog.setDialogShow(true);
+            props.setTab(1);
+          }else{
+            props.dialog.setDialogText("Birşeyler ters gitti!");
+            props.dialog.setDialogShow(true);
+          }
+          
+        })
+        .catch(error => {
+          console.log(error)
           props.dialog.setDialogText("Birşeyler ters gitti!");
           props.dialog.setDialogShow(true);
-        }
-        
-      })
-      .catch(error => {
-        console.log(error)
-        props.dialog.setDialogText("Birşeyler ters gitti!");
-        props.dialog.setDialogShow(true);
-      }).finally(()=> {setMaskLoading(false);});
-    });
+        }).finally(()=> {setMaskLoading(false);});
+      });
+    } catch (error) {
+      
+    }
+    
    
    
   }

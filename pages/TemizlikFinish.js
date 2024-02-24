@@ -34,22 +34,27 @@ const  TemizlikFinish = (props) => {
   }, []);
   
   const getData = () => { 
-    setMaskLoading(true);
-    axios.get( Settings.baseUrl + '/temizlikListesi/' ,{ headers: { 'authorization': state.userToken } }
-    ).then( (response) =>  {
-      try {
-        setData(response.data)
-        
-      } catch (error) {
-        
-      }
-    })
-    .catch( (error) => {
-      if(error.toJSON().status == 403){
-        exit();
-      }
-      console.log(error);
-    }).finally(()=> setMaskLoading(false) )
+    try {
+      setMaskLoading(true);
+      axios.get( Settings.baseUrl + '/temizlikListesi/' ,{ headers: { 'authorization': state.userToken } }
+      ).then( (response) =>  {
+        try {
+          setData(response.data)
+          
+        } catch (error) {
+          
+        }
+      })
+      .catch( (error) => {
+        if(error.toJSON().status == 403){
+          exit();
+        }
+        console.log(error);
+      }).finally(()=> setMaskLoading(false) )
+    } catch (error) {
+      
+    }
+    
 
   }
   const exit = () => { 
@@ -119,8 +124,8 @@ const  TemizlikFinish = (props) => {
                 </ScrollView>
               </View>
               <View>
-              {  data == null && <Text style={{...styles.boldText,textAlign:'center'}}> -- Bu gün için temizlik kayıdı bulunamadı. -- </Text> }
-              {  data &&  data.durum == 'giris' && <Text style={{...styles.boldText,textAlign:'center'}}> -- Giriş yapmak için qr okutunuz. -- </Text> }
+              { data == null && <Text style={{...styles.boldText,textAlign:'center'}}> -- Bu gün için temizlik kaydı bulunamadı. -- </Text> }
+              { data &&  data.durum == 'giris' && <Text style={{...styles.boldText,textAlign:'center'}}> -- Giriş yapmak için qr okutunuz. -- </Text> }
               { data &&  data.durum == 'cikis' &&  <Text style={{...styles.boldText,textAlign:'center'}}> -- Çıkış yapmak için fotoğraf ekleyip qr okutunuz. -- </Text> }    
               <View style={{height:100, margin:20, display:'flex',flexDirection:'row',alignItems: 'center',justifyContent: 'center'}}>
                 
